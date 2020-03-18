@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.valerie.wx.miniapp.mapper.UserMapper">
+
+    <resultMap type="com.github.valerie.wx.miniapp.model.User" id="UserMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="Name" jdbcType="VARCHAR"/>
+        <result property="phone" column="Phone" jdbcType="VARCHAR"/>
+        <result property="password" column="Password" jdbcType="VARCHAR"/>
+        <result property="roleId" column="Role_ID" jdbcType="INTEGER"/>
+        <result property="openId" column="Open_ID" jdbcType="VARCHAR"/>
+        <result property="dutyId" column="Duty_ID" jdbcType="INTEGER"/>
+        <result property="depId" column="Dep_ID" jdbcType="INTEGER"/>
+        <result property="remark" column="Remark" jdbcType="VARCHAR"/>
+        <result property="status" column="Status" jdbcType="INTEGER"/>
+        <result property="note" column="Note" jdbcType="VARCHAR"/>
+        <result property="creatTime" column="Creat_Time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="Update_Time" jdbcType="TIMESTAMP"/>
+        <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
+        <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        ID, Name, Phone, Password, Role_ID, Open_ID, Duty_ID, Dep_ID, Remark, Status, Note, Creat_Time, Update_Time, temp_a, temp_b    
+    </sql>
+
+    <select id="loadUserByPhone" resultMap="UserMap">
+        select * from user where Phone = #{openId}
+    </select>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="UserMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where ID = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="selectAllPaging" resultMap="UserMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAll" resultMap="UserMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and Name = #{name}
+            </if>
+            <if test="phone != null and phone != ''">
+                and Phone = #{phone}
+            </if>
+            <if test="password != null and password != ''">
+                and Password = #{password}
+            </if>
+            <if test="roleId != null">
+                and Role_ID = #{roleId}
+            </if>
+            <if test="openId != null and openId != ''">
+                and Open_ID = #{openId}
+            </if>
+            <if test="dutyId != null">
+                and Duty_ID = #{dutyId}
+            </if>
+            <if test="depId != null">
+                and Dep_ID = #{depId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and Remark = #{remark}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="creatTime != null">
+                and Creat_Time = #{creatTime}
+            </if>
+            <if test="updateTime != null">
+                and Update_Time = #{updateTime}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+    
+    <!--通过Map作为筛选条件查询-->
+    <select id="select" resultMap="UserMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and Name = #{name}
+            </if>
+            <if test="phone != null and phone != ''">
+                and Phone = #{phone}
+            </if>
+            <if test="password != null and password != ''">
+                and Password = #{password}
+            </if>
+            <if test="roleId != null">
+                and Role_ID = #{roleId}
+            </if>
+            <if test="openId != null and openId != ''">
+                and Open_ID = #{openId}
+            </if>
+            <if test="dutyId != null">
+                and Duty_ID = #{dutyId}
+            </if>
+            <if test="depId != null">
+                and Dep_ID = #{depId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and Remark = #{remark}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="creatTime != null">
+                and Creat_Time = #{creatTime}
+            </if>
+            <if test="updateTime != null">
+                and Update_Time = #{updateTime}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null">
+                Name,
+            </if>
+            <if test="phone != null">
+                Phone,
+            </if>
+            <if test="password != null">
+                Password,
+            </if>
+            <if test="roleId != null">
+                Role_ID,
+            </if>
+            <if test="openId != null">
+                Open_ID,
+            </if>
+            <if test="dutyId != null">
+                Duty_ID,
+            </if>
+            <if test="depId != null">
+                Dep_ID,
+            </if>
+            <if test="remark != null">
+                Remark,
+            </if>
+            <if test="status != null">
+                Status,
+            </if>
+            <if test="note != null">
+                Note,
+            </if>
+            <if test="creatTime != null">
+                Creat_Time,
+            </if>
+            <if test="updateTime != null">
+                Update_Time,
+            </if>
+            <if test="tempA != null">
+                temp_a,
+            </if>
+            <if test="tempB != null">
+                temp_b,
+            </if>
+        </trim>
+        values        
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="phone != null">
+                #{phone},
+            </if>
+            <if test="password != null">
+                #{password},
+            </if>
+            <if test="roleId != null">
+                #{roleId},
+            </if>
+            <if test="openId != null">
+                #{openId},
+            </if>
+            <if test="dutyId != null">
+                #{dutyId},
+            </if>
+            <if test="depId != null">
+                #{depId},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="note != null">
+                #{note},
+            </if>
+            <if test="creatTime != null">
+                #{creatTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="tempA != null">
+                #{tempA},
+            </if>
+            <if test="tempB != null">
+                #{tempB},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="name != null and name != ''">
+                Name = #{name},
+            </if>
+            <if test="phone != null and phone != ''">
+                Phone = #{phone},
+            </if>
+            <if test="password != null and password != ''">
+                Password = #{password},
+            </if>
+            <if test="roleId != null">
+                Role_ID = #{roleId},
+            </if>
+            <if test="openId != null and openId != ''">
+                Open_ID = #{openId},
+            </if>
+            <if test="dutyId != null">
+                Duty_ID = #{dutyId},
+            </if>
+            <if test="depId != null">
+                Dep_ID = #{depId},
+            </if>
+            <if test="remark != null and remark != ''">
+                Remark = #{remark},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+            <if test="note != null and note != ''">
+                Note = #{note},
+            </if>
+            <if test="creatTime != null">
+                Creat_Time = #{creatTime},
+            </if>
+            <if test="updateTime != null">
+                Update_Time = #{updateTime},
+            </if>
+            <if test="tempA != null and tempA != ''">
+                temp_a = #{tempA},
+            </if>
+            <if test="tempB != null and tempB != ''">
+                temp_b = #{tempB},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from user where ID = #{id}
+    </delete>
+
+</mapper>

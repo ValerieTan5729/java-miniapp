@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.valerie.wx.miniapp.mapper.DictoryMapper">
+
+    <resultMap type="com.github.valerie.wx.miniapp.model.Dictory" id="DictoryMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="Name" jdbcType="VARCHAR"/>
+        <result property="parentId" column="Parent_ID" jdbcType="INTEGER"/>
+        <result property="status" column="Status" jdbcType="INTEGER"/>
+        <result property="note" column="Note" jdbcType="VARCHAR"/>
+        <result property="creatTime" column="Creat_Time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="Update_Time" jdbcType="TIMESTAMP"/>
+        <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
+        <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        ID, Name, Parent_ID, Status, Note, Creat_Time, Update_Time, temp_a, temp_b    
+    </sql>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="DictoryMap">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        where ID = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="selectAllPaging" resultMap="DictoryMap">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAll" resultMap="DictoryMap">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and Name = #{name}
+            </if>
+            <if test="parentId != null">
+                and Parent_ID = #{parentId}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="creatTime != null">
+                and Creat_Time = #{creatTime}
+            </if>
+            <if test="updateTime != null">
+                and Update_Time = #{updateTime}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+    
+    <!--通过Map作为筛选条件查询-->
+    <select id="select" resultMap="DictoryMap">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and Name = #{name}
+            </if>
+            <if test="parentId != null">
+                and Parent_ID = #{parentId}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="creatTime != null">
+                and Creat_Time = #{creatTime}
+            </if>
+            <if test="updateTime != null">
+                and Update_Time = #{updateTime}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into dictory        
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null">
+                Name,
+            </if>
+            <if test="parentId != null">
+                Parent_ID,
+            </if>
+            <if test="status != null">
+                Status,
+            </if>
+            <if test="note != null">
+                Note,
+            </if>
+            <if test="creatTime != null">
+                Creat_Time,
+            </if>
+            <if test="updateTime != null">
+                Update_Time,
+            </if>
+            <if test="tempA != null">
+                temp_a,
+            </if>
+            <if test="tempB != null">
+                temp_b,
+            </if>
+        </trim>
+        values        
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="note != null">
+                #{note},
+            </if>
+            <if test="creatTime != null">
+                #{creatTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="tempA != null">
+                #{tempA},
+            </if>
+            <if test="tempB != null">
+                #{tempB},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update dictory
+        <set>
+            <if test="name != null and name != ''">
+                Name = #{name},
+            </if>
+            <if test="parentId != null">
+                Parent_ID = #{parentId},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+            <if test="note != null and note != ''">
+                Note = #{note},
+            </if>
+            <if test="creatTime != null">
+                Creat_Time = #{creatTime},
+            </if>
+            <if test="updateTime != null">
+                Update_Time = #{updateTime},
+            </if>
+            <if test="tempA != null and tempA != ''">
+                temp_a = #{tempA},
+            </if>
+            <if test="tempB != null and tempB != ''">
+                temp_b = #{tempB},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from dictory where ID = #{id}
+    </delete>
+
+</mapper>
