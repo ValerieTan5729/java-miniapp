@@ -1,22 +1,24 @@
 package com.github.valerie.wx.miniapp.mapper;
 
-import com.github.valerie.wx.miniapp.model.Role;
-import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.model.Menu;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 用户信息(User)表数据库访问层mapper
+ * (Menu)表数据库访问层mapper
  *
  * @author makejava
- * @since 2020-03-17 14:42:54
+ * @since 2020-03-19 09:12:23
  */
 @Component
-public interface UserMapper {
+public interface MenuMapper {
 
-    User loadUserByPhone(String phone);
+    /**
+     * 获取所有菜单权限
+     * */
+    List<Menu> getAllMenusWithRole();
 
     /**
      * 通过ID查询单条数据
@@ -24,11 +26,7 @@ public interface UserMapper {
      * @param id 主键
      * @return 实例对象
      */
-    User selectById(Long id);
-
-    User selectIdWithRole(Long id);
-
-    List<Role> getUserRolesById(Long id);
+    Menu selectById(Long id);
 
     /**
      * 分页查询
@@ -37,16 +35,16 @@ public interface UserMapper {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<User> selectAllPaging(@Param("offset") int offset, @Param("limit") int limit);
+    List<Menu> selectAllPaging(@Param("offset") int offset, @Param("limit") int limit);
 
 
     /**
      * 通过实体作为筛选条件查询
      *
-     * @param user 实例对象
+     * @param menu 实例对象
      * @return 对象列表
      */
-    List<User> selectAll(User user);
+    List<Menu> selectAll(Menu menu);
     
     /**
      * 通过Map作为筛选条件查询
@@ -54,23 +52,23 @@ public interface UserMapper {
      * @param param 查询条件
      * @return 对象列表
      */
-    List<User> select(Map<String, Object> param);
+    List<Menu> select(Map<String, Object> param);
 
     /**
      * 新增数据
      *
-     * @param user 实例对象
+     * @param menu 实例对象
      * @return 影响行数
      */
-    int add(User user);
+    int add(Menu menu);
 
     /**
      * 修改数据
      *
-     * @param user 实例对象
+     * @param menu 实例对象
      * @return 影响行数
      */
-    int update(User user);
+    int update(Menu menu);
 
     /**
      * 通过主键删除数据

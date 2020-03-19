@@ -1,5 +1,6 @@
 package com.github.valerie.wx.miniapp.service.impl;
 
+import com.github.valerie.wx.miniapp.model.Role;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.mapper.UserMapper;
 import com.github.valerie.wx.miniapp.service.UserService;
@@ -32,6 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectById(Long id) {
         return this.userMapper.selectById(id);
+    }
+
+    @Override
+    public User selectIdWithRole(Long id) {
+        return this.userMapper.selectIdWithRole(id);
     }
 
     /**
@@ -105,6 +111,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        return userMapper.loadUserByPhone(phone);
+        User user = this.userMapper.loadUserByPhone(phone);
+        if (user == null) {
+            throw new UsernameNotFoundException("该用户不存在!");
+        }
+        user.setRoles(this.userMapper.getUserRolesById(user.getId()));
+        return user;
     }
 }

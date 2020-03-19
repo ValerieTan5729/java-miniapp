@@ -1,11 +1,16 @@
 package com.github.valerie.wx.miniapp.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -41,12 +46,6 @@ public class User implements UserDetails {
     */    
     @ApiModelProperty("用户密码")
     private String password;
-    
-    /**
-    * 用户权限
-    */    
-    @ApiModelProperty("用户权限")
-    private Integer roleId;
     
     /**
     * 用户的微信openId
@@ -85,18 +84,6 @@ public class User implements UserDetails {
     private String note;
     
     /**
-    * 创建时间
-    */    
-    @ApiModelProperty("创建时间")
-    private Date creatTime;
-    
-    /**
-    * 更新时间
-    */    
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
-    
-    /**
     * 备用字段1
     */    
     @ApiModelProperty("备用字段1")
@@ -108,10 +95,21 @@ public class User implements UserDetails {
     @ApiModelProperty("备用字段2")
     private String tempB;
 
+    /**
+     * 用户权限
+     * */
+    @ApiModelProperty("用户权限")
+    private List<Role> roles;
+
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>(roles.size());
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
     }
 
     @Override
