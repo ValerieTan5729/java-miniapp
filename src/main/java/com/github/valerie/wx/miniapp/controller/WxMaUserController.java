@@ -1,14 +1,14 @@
 package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.model.WxUser;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
+import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationProvider;
+import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,17 +60,15 @@ public class WxMaUserController {
             WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
             log.info("sessionKey为{}", session.getSessionKey());
             log.info("用户的openId为{}", session.getOpenid());
+            log.info("用户的unionId为{}", session.getUnionid());
             // 获取access_token
             String token = wxService.getAccessToken();
             // TODO 可以增加自己的逻辑，关联业务相关数据
-            User user = ((User) this.userService.loadUserByUsername(phone));
+            User user = (User) this.userService.loadUserByUsername(phone);
             if (user != null) {
                 log.info("password is {}", user.getPassword());
-                if (user.getOpenId() == null) {
-                    user.setOpenId(new BCryptPasswordEncoder().encode(session.getOpenid()));
-                    userService.update(user);
-                }
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, session.getOpenid());
+                // 微信手机号码直接登录后台
+                WxAuthenticationToken authentication = new WxAuthenticationToken(phone);
                 authentication.setDetails(new WebAuthenticationDetails(request));
                 Authentication authenticatedUser = authenticationManager.authenticate(authentication);
                 log.info("auth:{}", authentication);

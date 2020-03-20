@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
+import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationSecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
@@ -29,9 +31,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
-@EnableWebSecurity
 @Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private WxAuthenticationSecurityConfig wxAuthenticationSecurityConfig;
 
     @Autowired
     private UserService service;
@@ -50,8 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
-        auth.userDetailsService(service);
+        auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -63,6 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        http.apply(wxAuthenticationSecurityConfig);
         // 开启登录配置
         http.authorizeRequests()
             // 具备admin这个角色才能访问/hello这个接口
