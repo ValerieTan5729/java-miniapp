@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,14 +50,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
+        // auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(service);
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 忽视微信小程序的API接口
         // web.ignoring().antMatchers("/**/**", "/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        web.ignoring().antMatchers("/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        web.ignoring().antMatchers("/wx/user/wxeb195511809cd1ef/login","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
     }
 
     @Override
@@ -146,12 +148,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 PrintWriter out = response.getWriter();
                 RespBean respBean = RespBean.error("访问失败!");
                 if (exception instanceof InsufficientAuthenticationException) {
-                    respBean.setMsg("请求失败，请联系管理员!");
+                    respBean.setMsg("登录认证失败，请联系系统管理员");
                 }
                 out.write(new ObjectMapper().writeValueAsString(respBean));
                 out.flush();
                 out.close();
             });
+        // http.cors();
             /*
             .and().sessionManagement()
             .maximumSessions(1) //同一账号同时登录最大用户数
@@ -169,5 +172,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             })*/
         //记住我功能  cookie默认保存两周
         // http.rememberMe().rememberMeParameter("");
+    }
+
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

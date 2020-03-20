@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("该用户不存在!");
         }
-        user.setRoles(this.userMapper.getUserRolesById(user.getId()));
+        // user.setRoles(this.userMapper.getUserRolesById(user.getId()));
         return user;
     }
 }

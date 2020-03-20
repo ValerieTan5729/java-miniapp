@@ -1,9 +1,21 @@
 package com.github.valerie.wx.miniapp.controller;
 
+import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
@@ -22,19 +34,22 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
+@Slf4j
 @RestController
 @RequestMapping("/wx/user/{appid}")
 public class WxMaUserController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // @Autowired
-    // private UserService userService;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    protected AuthenticationManager authenticationManager;
 
     /**
      * 登陆接口
      */
     @GetMapping("/login")
-    public String login(@PathVariable String appid, @RequestParam String code) {
+    public String login(HttpServletRequest request, @PathVariable String appid, @RequestParam String code, @RequestParam String phone) {
         if (StringUtils.isBlank(code)) {
             return "empty jscode";
         }
@@ -43,15 +58,30 @@ public class WxMaUserController {
 
         try {
             WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
-            this.logger.info("sessionKey为{}", session.getSessionKey());
-            this.logger.info("用户的openId为{}", session.getOpenid());
+            log.info("sessionKey为{}", session.getSessionKey());
+            log.info("用户的openId为{}", session.getOpenid());
             // 获取access_token
             String token = wxService.getAccessToken();
             // TODO 可以增加自己的逻辑，关联业务相关数据
-            // userService.select(null);
+            User user = ((User) this.userService.loadUserByUsername(phone));
+            if (user != null) {
+                log.info("password is {}", user.getPassword());
+                if (user.getOpenId() == null) {
+                    user.setOpenId(new BCryptPasswordEncoder().encode(session.getOpenid()));
+                    userService.update(user);
+                }
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, session.getOpenid());
+                authentication.setDetails(new WebAuthenticationDetails(request));
+                Authentication authenticatedUser = authenticationManager.authenticate(authentication);
+                log.info("auth:{}", authentication);
+                SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+                request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+                String sessionId = request.getSession().getId();
+                return JsonUtils.toJson(sessionId);
+            }
             return JsonUtils.toJson(session);
         } catch (WxErrorException e) {
-            this.logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return e.toString();
         }
     }
@@ -113,7 +143,9 @@ public class WxMaUserController {
     public String token(@PathVariable String appid) throws WxErrorException {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
         String token = wxService.getAccessToken();
-        this.logger.info("token = {}", token);
+        log.info("token = {}", token);
+        User user = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        log.info("user phone : {}", user.getPhone());
         return JsonUtils.toJson(token);
     }
 
