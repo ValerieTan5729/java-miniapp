@@ -15,7 +15,6 @@ spring:
     username: root
     password: 0824,Love
     url: jdbc:mysql://localhost:3306/clock?characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
-#    url: jdbc:mysql://47.102.210.132:2005/clock?characterEncoding=UTF-8&serverTimezone=GMT%2B8
   jpa:
     show-sql: true
   redis:
@@ -34,6 +33,6 @@ spring:
 wx:
   miniapp:
     configs:
-      - appid: wxeb195511809cd1ef
-        secret: 6b61c4f5ea6c1759d45b28d8ea2859c6
+      - appid: 
+        secret: 
         msgDataFormat: JSON
