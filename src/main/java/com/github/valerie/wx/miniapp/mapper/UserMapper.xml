@@ -3,7 +3,7 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.UserMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.User" id="UserMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="Name" jdbcType="VARCHAR"/>
         <result property="phone" column="Phone" jdbcType="VARCHAR"/>
         <result property="password" column="Password" jdbcType="VARCHAR"/>
@@ -82,8 +82,47 @@
             <if test="password != null and password != ''">
                 and Password = #{password}
             </if>
-            <if test="roleId != null">
-                and Role_ID = #{roleId}
+            <if test="openId != null and openId != ''">
+                and Open_ID = #{openId}
+            </if>
+            <if test="dutyId != null">
+                and Duty_ID = #{dutyId}
+            </if>
+            <if test="depId != null">
+                and Dep_ID = #{depId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and Remark = #{remark}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+    </select>
+    
+    <!--通过Map作为筛选条件查询-->
+    <select id="select" resultMap="UserMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        <where>
+            <if test="name != null and name != ''">
+                and Name = #{name}
+            </if>
+            <if test="phone != null and phone != ''">
+                and Phone = #{phone}
+            </if>
+            <if test="password != null and password != ''">
+                and Password = #{password}
             </if>
             <if test="openId != null and openId != ''">
                 and Open_ID = #{openId}
@@ -114,57 +153,9 @@
             limit #{page}, #{limit}
         </if>
     </select>
-    
-    <!--通过Map作为筛选条件查询-->
-    <select id="select" resultMap="UserMap">
-        select
-        <include refid="Base_Column_List" />
-        from user
-        <where>
-            <if test="id != null">
-                and ID = #{id}
-            </if>
-            <if test="name != null and name != ''">
-                and Name = #{name}
-            </if>
-            <if test="phone != null and phone != ''">
-                and Phone = #{phone}
-            </if>
-            <if test="password != null and password != ''">
-                and Password = #{password}
-            </if>
-            <if test="roleId != null">
-                and Role_ID = #{roleId}
-            </if>
-            <if test="openId != null and openId != ''">
-                and Open_ID = #{openId}
-            </if>
-            <if test="dutyId != null">
-                and Duty_ID = #{dutyId}
-            </if>
-            <if test="depId != null">
-                and Dep_ID = #{depId}
-            </if>
-            <if test="remark != null and remark != ''">
-                and Remark = #{remark}
-            </if>
-            <if test="status != null">
-                and Status = #{status}
-            </if>
-            <if test="note != null and note != ''">
-                and Note = #{note}
-            </if>
-            <if test="tempA != null and tempA != ''">
-                and temp_a = #{tempA}
-            </if>
-            <if test="tempB != null and tempB != ''">
-                and temp_b = #{tempB}
-            </if>
-        </where>
-    </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="name != null">
@@ -175,9 +166,6 @@
             </if>
             <if test="password != null">
                 Password,
-            </if>
-            <if test="roleId != null">
-                Role_ID,
             </if>
             <if test="openId != null">
                 Open_ID,
@@ -214,9 +202,6 @@
             </if>
             <if test="password != null">
                 #{password},
-            </if>
-            <if test="roleId != null">
-                #{roleId},
             </if>
             <if test="openId != null">
                 #{openId},
@@ -257,9 +242,6 @@
             </if>
             <if test="password != null and password != ''">
                 Password = #{password},
-            </if>
-            <if test="roleId != null">
-                Role_ID = #{roleId},
             </if>
             <if test="openId != null and openId != ''">
                 Open_ID = #{openId},

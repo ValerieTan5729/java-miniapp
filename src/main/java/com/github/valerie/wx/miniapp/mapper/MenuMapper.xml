@@ -3,12 +3,12 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.MenuMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.Menu" id="MenuMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="Name" jdbcType="VARCHAR"/>
         <result property="url" column="Url" jdbcType="VARCHAR"/>
         <result property="path" column="Path" jdbcType="VARCHAR"/>
         <result property="auth" column="Auth" jdbcType="INTEGER"/>
-        <result property="parentid" column="ParentId" jdbcType="INTEGER"/>
+        <result property="parentId" column="Parent_Id" jdbcType="BIGINT"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
@@ -71,20 +71,14 @@
             <if test="auth != null">
                 and Auth = #{auth}
             </if>
-            <if test="parentid != null">
-                and ParentId = #{parentid}
+            <if test="parentId != null">
+                and Parent_Id = #{parentId}
             </if>
             <if test="status != null">
                 and Status = #{status}
             </if>
             <if test="note != null and note != ''">
                 and Note = #{note}
-            </if>
-            <if test="creatTime != null">
-                and Creat_Time = #{creatTime}
-            </if>
-            <if test="updateTime != null">
-                and Update_Time = #{updateTime}
             </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
@@ -119,20 +113,14 @@
             <if test="auth != null">
                 and Auth = #{auth}
             </if>
-            <if test="parentid != null">
-                and ParentId = #{parentid}
+            <if test="parentId != null">
+                and Parent_Id = #{parentId}
             </if>
             <if test="status != null">
                 and Status = #{status}
             </if>
             <if test="note != null and note != ''">
                 and Note = #{note}
-            </if>
-            <if test="creatTime != null">
-                and Creat_Time = #{creatTime}
-            </if>
-            <if test="updateTime != null">
-                and Update_Time = #{updateTime}
             </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
@@ -159,20 +147,14 @@
             <if test="auth != null">
                 Auth,
             </if>
-            <if test="parentid != null">
-                ParentId,
+            <if test="parentId != null">
+                Parent_Id,
             </if>
             <if test="status != null">
                 Status,
             </if>
             <if test="note != null">
                 Note,
-            </if>
-            <if test="creatTime != null">
-                Creat_Time,
-            </if>
-            <if test="updateTime != null">
-                Update_Time,
             </if>
             <if test="tempA != null">
                 temp_a,
@@ -195,20 +177,14 @@
             <if test="auth != null">
                 #{auth},
             </if>
-            <if test="parentid != null">
-                #{parentid},
+            <if test="parentId != null">
+                #{parentId},
             </if>
             <if test="status != null">
                 #{status},
             </if>
             <if test="note != null">
                 #{note},
-            </if>
-            <if test="creatTime != null">
-                #{creatTime},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime},
             </if>
             <if test="tempA != null">
                 #{tempA},
@@ -235,20 +211,14 @@
             <if test="auth != null">
                 Auth = #{auth},
             </if>
-            <if test="parentid != null">
-                ParentId = #{parentid},
+            <if test="parentId != null">
+                Parent_Id = #{parentId},
             </if>
             <if test="status != null">
                 Status = #{status},
             </if>
             <if test="note != null and note != ''">
                 Note = #{note},
-            </if>
-            <if test="creatTime != null">
-                Creat_Time = #{creatTime},
-            </if>
-            <if test="updateTime != null">
-                Update_Time = #{updateTime},
             </if>
             <if test="tempA != null and tempA != ''">
                 temp_a = #{tempA},

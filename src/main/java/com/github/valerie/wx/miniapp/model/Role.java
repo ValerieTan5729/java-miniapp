@@ -19,7 +19,7 @@ public class Role {
     * 角色ID
     */    
     @ApiModelProperty("角色ID")
-    private Integer id;
+    private Long id;
     
     /**
     * 角色code

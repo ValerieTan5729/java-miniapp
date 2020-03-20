@@ -51,7 +51,7 @@ public class Menu {
     * 上一级菜单ID
     */    
     @ApiModelProperty("上一级菜单ID")
-    private Long parentid;
+    private Long parentId;
     
     /**
     * 状态(0有效/1无效)

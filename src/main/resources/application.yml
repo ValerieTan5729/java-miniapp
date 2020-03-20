@@ -1,0 +1,4 @@
+spring:
+    profiles:
+        # 这个属性就是区分具体加载的什么环境的配置文件，如application-pro.yml
+        active: dev

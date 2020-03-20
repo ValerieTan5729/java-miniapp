@@ -3,13 +3,11 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.RoleMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.Role" id="RoleMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="namezh" column="nameZh" jdbcType="VARCHAR"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
-        <result property="creatTime" column="Creat_Time" jdbcType="TIMESTAMP"/>
-        <result property="updateTime" column="Update_Time" jdbcType="TIMESTAMP"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
         <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
     </resultMap>
@@ -60,12 +58,6 @@
             <if test="note != null and note != ''">
                 and Note = #{note}
             </if>
-            <if test="creatTime != null">
-                and Creat_Time = #{creatTime}
-            </if>
-            <if test="updateTime != null">
-                and Update_Time = #{updateTime}
-            </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
             </if>
@@ -99,12 +91,6 @@
             <if test="note != null and note != ''">
                 and Note = #{note}
             </if>
-            <if test="creatTime != null">
-                and Creat_Time = #{creatTime}
-            </if>
-            <if test="updateTime != null">
-                and Update_Time = #{updateTime}
-            </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
             </if>
@@ -130,12 +116,6 @@
             <if test="note != null">
                 Note,
             </if>
-            <if test="creatTime != null">
-                Creat_Time,
-            </if>
-            <if test="updateTime != null">
-                Update_Time,
-            </if>
             <if test="tempA != null">
                 temp_a,
             </if>
@@ -156,12 +136,6 @@
             </if>
             <if test="note != null">
                 #{note},
-            </if>
-            <if test="creatTime != null">
-                #{creatTime},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime},
             </if>
             <if test="tempA != null">
                 #{tempA},
@@ -187,12 +161,6 @@
             </if>
             <if test="note != null and note != ''">
                 Note = #{note},
-            </if>
-            <if test="creatTime != null">
-                Creat_Time = #{creatTime},
-            </if>
-            <if test="updateTime != null">
-                Update_Time = #{updateTime},
             </if>
             <if test="tempA != null and tempA != ''">
                 temp_a = #{tempA},
