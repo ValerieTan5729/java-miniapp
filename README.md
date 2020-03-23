@@ -78,7 +78,7 @@ spring:
 
 ## Spring Security配置
 
-采用Spring Security来实现权限控制。
+### 1.采用Spring Security来实现权限控制。
 
 - WebSecurityConfig 
 
@@ -102,6 +102,39 @@ POST localhost:2005/mini/login?phone=&password=
 PS:不能随便用浏览器访问`localhost:2005/mini/login`，这种时候采用的method是GET，不能实现登录
 (主要是WebSecurityConfig设置了不重定向到Spring Security的登录页面`authenticationEntryPoint`)。
 
+### 2.手机号码直接登录系统
+
+考虑到用户在微信小程序使用该系统的时候，希望能够直接通过手机号登录该系统，因此在登录方面增加了
+类似`手机号码+验证码`的形式进行登录。[参考博客传送门](https://blog.csdn.net/yuanlaijike/article/details/86164160)
+
+全程主要模仿`UsernamePasswordAuthentication`机制实现，
+主要的代码实现在`com.github.valerie.wx.miniapp.config.wxLogin`中。
+
+- WxAuthenticationToken
+
+  参考`UsernamePasswordAuthenticationToken`实现，主要通过手机号码获取一个安全的凭证，以便在后续的访问中
+  可以访问其他需要登录认证的API。
+
+- WxAuthenticationFilter
+
+  参考`UsernamePasswordAuthenticationFilter`实现，主要是检验发送过来的url的方式是否为post和获取手机号码参数，
+  而在系统实现中，不涉及这一部分。
+  
+  (如果需要测试这个，可以使用postman访问`localhost:2005/mini/wx/user/wxeb195511809cd1ef/login`，并且修改
+  该API为`PostMapping`。)
+
+- WxAuthenticationProvider
+
+  这个类较为重要，为SpringSecurity的`AuthenticationManager`增加新的验证机制。
+
+- WxAuthenticationSecurityConfig
+
+  微信手机号码登录的配置。
+  
+  使用该配置的方法：在`WebSecurityConfig`的`configure(HttpSecurity http)`添加`http.apply(wxAuthenticationSecurityConfig);`。
+  
+PS:在测试过程中发现，如果在`Spring Security`的配置过滤的url，访问这些url的时候，无法获取当前登录用户的信息。
+
 
 ## 微信小程序第三方SDK配置
 
@@ -119,6 +152,4 @@ wx:
 `WxMaProperties`和`WxMaConfiguration`是必须的， 
 项目加载之后调用`final WxMaService wxService = WxMaConfiguration.getMaService(appid);`，
 使用`wxService`相应的方法来实现与微信服务端的交互。
-
-
 

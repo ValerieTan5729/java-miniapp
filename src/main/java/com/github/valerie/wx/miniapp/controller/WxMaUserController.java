@@ -1,19 +1,15 @@
 package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.User;
-import com.github.valerie.wx.miniapp.model.WxUser;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
-import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationProvider;
-import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationToken;
+import com.github.valerie.wx.miniapp.config.wxLogin.WxAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +57,6 @@ public class WxMaUserController {
             log.info("sessionKey为{}", session.getSessionKey());
             log.info("用户的openId为{}", session.getOpenid());
             log.info("用户的unionId为{}", session.getUnionid());
-            // 获取access_token
-            String token = wxService.getAccessToken();
             // TODO 可以增加自己的逻辑，关联业务相关数据
             User user = (User) this.userService.loadUserByUsername(phone);
             if (user != null) {
@@ -115,7 +109,8 @@ public class WxMaUserController {
      * </pre>
      */
     @GetMapping("/phone")
-    public String phone(@PathVariable String appid,
+    public String phone(HttpServletRequest request,
+                        @PathVariable String appid,
                         @RequestParam String sessionKey,
                         @RequestParam String signature,
                         @RequestParam String rawData,
@@ -131,6 +126,21 @@ public class WxMaUserController {
         // 解密
         WxMaPhoneNumberInfo phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
 
+        /*
+        User user = (User) this.userService.loadUserByUsername(phoneNoInfo.getPhoneNumber());
+        if (user != null) {
+            log.info("password is {}", user.getPassword());
+            // 微信手机号码直接登录后台
+            WxAuthenticationToken authentication = new WxAuthenticationToken(phoneNoInfo.getPhoneNumber());
+            authentication.setDetails(new WebAuthenticationDetails(request));
+            Authentication authenticatedUser = authenticationManager.authenticate(authentication);
+            log.info("auth:{}", authentication);
+            SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+            String sessionId = request.getSession().getId();
+            return JsonUtils.toJson(sessionId);
+        }
+        */
         return JsonUtils.toJson(phoneNoInfo);
     }
 

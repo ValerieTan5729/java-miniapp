@@ -1,29 +1,29 @@
 package com.github.valerie.wx.miniapp.service;
 
-import com.github.valerie.wx.miniapp.model.Menu;
+import com.github.valerie.wx.miniapp.model.Department;
 import java.util.List;
 import java.util.Map;
 
 /**
- * (Menu)表服务接口
+ * 部门信息(Department)表服务接口
  *
  * @author makejava
- * @since 2020-03-19 09:12:23
+ * @since 2020-03-23 10:41:48
  */
-public interface MenuService {
+public interface DepartmentService {
 
     /**
-     * 通过Parent_ID查询所有部门信息
+     * 获取所有部门信息
+     * */
+    List<Department> getAllDepartments();
+
+    /**
+     * 查询下属部门
      *
      * @param pid parentId
      * @return 对象列表
      */
-    List<Menu> getAllMenusByParentId(Integer pid);
-
-    /**
-     * 获取所有菜单权限
-     * */
-    List<Menu> getAllMenusWithRole();
+    List<Department> getAllDepartmentsByParentId(Integer pid);
 
     /**
      * 通过ID查询单条数据
@@ -31,7 +31,7 @@ public interface MenuService {
      * @param id 主键
      * @return 实例对象
      */
-    Menu selectById(Long id);
+    Department selectById(Integer id);
 
     /**
      * 分页查询
@@ -40,16 +40,16 @@ public interface MenuService {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<Menu> selectAllPaging(int offset, int limit);
+    List<Department> selectAllPaging(int offset, int limit);
 
 
     /**
      * 通过实体作为筛选条件查询
      *
-     * @param menu 实例对象
+     * @param department 实例对象
      * @return 对象列表
      */
-    List<Menu> selectAll(Menu menu);
+    List<Department> selectAll(Department department);
     
     /**
      * 通过Map作为筛选条件查询
@@ -57,23 +57,23 @@ public interface MenuService {
      * @param param 查询条件
      * @return 对象列表
      */
-    List<Menu> select(Map<String, Object> param);
+    List<Department> select(Map<String, Object> param);
 
     /**
      * 新增数据
      *
-     * @param menu 实例对象
+     * @param department 实例对象
      * @return 影响行数
      */
-    int add(Menu menu);
+    int add(Department department);
 
     /**
      * 修改数据
      *
-     * @param menu 实例对象
+     * @param department 实例对象
      * @return 影响行数
      */
-    int update(Menu menu);
+    int update(Department department);
 
     /**
      * 通过主键删除数据
@@ -81,6 +81,10 @@ public interface MenuService {
      * @param id 主键
      * @return 影响行数
      */
-    int deleteById(Long id);
+    int deleteById(Integer id);
+
+    void addDep(Department dep);
+
+    void deleteDepById(Department dep);
 
 }

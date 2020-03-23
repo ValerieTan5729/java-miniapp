@@ -45,13 +45,13 @@ public class User implements UserDetails {
     * 用户密码
     */    
     @ApiModelProperty("用户密码")
-    private String password;
+    String password;
     
     /**
     * 用户的微信openId
     */    
     @ApiModelProperty("用户的微信openId")
-    private String openId;
+    String openId;
     
     /**
     * 用户值班级别ID
@@ -60,10 +60,16 @@ public class User implements UserDetails {
     private Integer dutyId;
     
     /**
-    * 用户部门ID
+    * 用户所在部门ID
     */    
-    @ApiModelProperty("用户部门ID")
+    @ApiModelProperty("用户所在部门ID")
     private Integer depId;
+
+    /**
+     * 用户所在部门名称
+     */
+    @ApiModelProperty("用户所在部门名称")
+    private String depName;
     
     /**
     * 用户备注

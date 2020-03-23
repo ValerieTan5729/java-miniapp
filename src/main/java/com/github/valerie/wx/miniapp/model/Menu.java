@@ -52,6 +52,12 @@ public class Menu {
     */    
     @ApiModelProperty("上一级菜单ID")
     private Long parentId;
+
+    /**
+     * 下一级菜单
+     */
+    @ApiModelProperty("下一级菜单")
+    private List<Menu> children;
     
     /**
     * 状态(0有效/1无效)

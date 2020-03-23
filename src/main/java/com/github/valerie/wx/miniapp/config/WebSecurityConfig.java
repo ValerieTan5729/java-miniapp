@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
-import com.github.valerie.wx.miniapp.utils.wxLogin.WxAuthenticationSecurityConfig;
+import com.github.valerie.wx.miniapp.config.wxLogin.WxAuthenticationSecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
@@ -16,18 +15,12 @@ import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.session.SessionInformationExpiredEvent;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
@@ -61,7 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         // 忽视微信小程序的API接口
         // web.ignoring().antMatchers("/**/**", "/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        web.ignoring().antMatchers("/wx/user/wxeb195511809cd1ef/login","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // 忽略的url无法获取当前用户的登录信息
+        web.ignoring().antMatchers("/login","/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
     }
 
     @Override

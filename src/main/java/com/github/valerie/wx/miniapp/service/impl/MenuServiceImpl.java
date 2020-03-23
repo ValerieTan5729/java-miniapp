@@ -23,6 +23,14 @@ public class MenuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
 
     /**
+     * 通过Parent_ID查询所有部门信息
+     */
+    @Override
+    public List<Menu> getAllMenusByParentId(Integer pid) {
+        return this.menuMapper.getAllMenusByParentId(pid);
+    }
+
+    /**
      * 获取所有菜单权限
      * */
     @Override

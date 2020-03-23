@@ -1,11 +1,9 @@
-package com.github.valerie.wx.miniapp.utils.wxLogin;
+package com.github.valerie.wx.miniapp.config.wxLogin;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
-import javax.security.auth.Subject;
 import java.util.Collection;
 
 public class WxAuthenticationToken extends AbstractAuthenticationToken {

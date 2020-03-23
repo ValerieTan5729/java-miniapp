@@ -10,6 +10,7 @@
         <result property="openId" column="Open_ID" jdbcType="VARCHAR"/>
         <result property="dutyId" column="Duty_ID" jdbcType="INTEGER"/>
         <result property="depId" column="Dep_ID" jdbcType="INTEGER"/>
+        <result property="depName" column="Dep_Name" jdbcType="VARCHAR"/>
         <result property="remark" column="Remark" jdbcType="VARCHAR"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
@@ -26,7 +27,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, Name, Phone, Password, Open_ID, Duty_ID, Dep_ID, Remark, Status, Note, temp_a, temp_b
+        user.ID, user.Name, user.Phone, user.Password, user.Open_ID, user.Duty_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
     </sql>
 
     <select id="loadUserByPhone" resultMap="UserWithRoles">
@@ -39,15 +40,17 @@
     <!--查询单个-->
     <select id="selectById" resultMap="UserMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List" />, department.Name as Dep_Name
         from user
-        where ID = #{id}
+             left join department on department.ID = user.Dep_ID
+        where user.ID = #{id}
     </select>
 
     <select id="selectIdWithRole" resultMap="UserWithRoles">
-        select user.*, role.ID as rid, role.name as rname, role.nameZh as rnamezh
+        select user.*, role.ID as rid, role.name as rname, role.nameZh as rnamezh, department.Name as Dep_Name
         from user join user_role on user_role.User_ID = user.ID
                   join role on role.ID = user_role.Role_ID
+                  left join department on department.ID = user.Dep_ID
         where user.ID = #{id}
     </select>
 
@@ -59,52 +62,53 @@
     <!--查询指定行数据-->
     <select id="selectAllPaging" resultMap="UserMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List" />, department.Name as Dep_Name
         from user
+             left join department on department.ID = user.Dep_ID
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAll" resultMap="UserMap">
         select
-        <include refid="Base_Column_List" />
-        from user
+        <include refid="Base_Column_List" />, department.Name as Dep_Name
+        from user left join department on department.ID = user.Dep_ID
         <where>
             <if test="id != null">
-                and ID = #{id}
+                and user.ID = #{id}
             </if>
             <if test="name != null and name != ''">
-                and Name = #{name}
+                and user.Name = #{name}
             </if>
             <if test="phone != null and phone != ''">
-                and Phone = #{phone}
+                and user.Phone = #{phone}
             </if>
             <if test="password != null and password != ''">
-                and Password = #{password}
+                and user.Password = #{password}
             </if>
             <if test="openId != null and openId != ''">
-                and Open_ID = #{openId}
+                and user.Open_ID = #{openId}
             </if>
             <if test="dutyId != null">
-                and Duty_ID = #{dutyId}
+                and user.Duty_ID = #{dutyId}
             </if>
             <if test="depId != null">
-                and Dep_ID = #{depId}
+                and user.Dep_ID = #{depId}
             </if>
             <if test="remark != null and remark != ''">
-                and Remark = #{remark}
+                and user.Remark = #{remark}
             </if>
             <if test="status != null">
-                and Status = #{status}
+                and user.Status = #{status}
             </if>
             <if test="note != null and note != ''">
-                and Note = #{note}
+                and user.Note = #{note}
             </if>
             <if test="tempA != null and tempA != ''">
-                and temp_a = #{tempA}
+                and user.temp_a = #{tempA}
             </if>
             <if test="tempB != null and tempB != ''">
-                and temp_b = #{tempB}
+                and user.temp_b = #{tempB}
             </if>
         </where>
     </select>
@@ -112,41 +116,41 @@
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="UserMap">
         select
-        <include refid="Base_Column_List" />
-        from user
+        <include refid="Base_Column_List" />, department.Name as Dep_Name
+        from user left join department on department.ID = user.Dep_ID
         <where>
             <if test="name != null and name != ''">
-                and Name = #{name}
+                and user.Name like CONCAT('%', #{name}, '%')
             </if>
             <if test="phone != null and phone != ''">
-                and Phone = #{phone}
+                and user.Phone = #{phone}
             </if>
             <if test="password != null and password != ''">
-                and Password = #{password}
+                and user.Password = #{password}
             </if>
             <if test="openId != null and openId != ''">
-                and Open_ID = #{openId}
+                and user.Open_ID = #{openId}
             </if>
             <if test="dutyId != null">
-                and Duty_ID = #{dutyId}
+                and user.Duty_ID = #{dutyId}
             </if>
             <if test="depId != null">
-                and Dep_ID = #{depId}
+                and user.Dep_ID = #{depId}
             </if>
             <if test="remark != null and remark != ''">
-                and Remark = #{remark}
+                and user.Remark = #{remark}
             </if>
             <if test="status != null">
-                and Status = #{status}
+                and user.Status = #{status}
             </if>
             <if test="note != null and note != ''">
-                and Note = #{note}
+                and user.Note = #{note}
             </if>
             <if test="tempA != null and tempA != ''">
-                and temp_a = #{tempA}
+                and user.temp_a = #{tempA}
             </if>
             <if test="tempB != null and tempB != ''">
-                and temp_b = #{tempB}
+                and user.temp_b = #{tempB}
             </if>
         </where>
         <if test="page != null and limit != null">
@@ -158,6 +162,9 @@
     <insert id="add" keyProperty="id" useGeneratedKeys="true">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null">
+                ID,
+            </if>
             <if test="name != null">
                 Name,
             </if>
@@ -194,6 +201,9 @@
         </trim>
         values        
         <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null">
+                #{id},
+            </if>
             <if test="name != null">
                 #{name},
             </if>

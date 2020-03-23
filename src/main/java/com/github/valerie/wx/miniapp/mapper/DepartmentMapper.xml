@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.valerie.wx.miniapp.mapper.RoleMapper">
+<mapper namespace="com.github.valerie.wx.miniapp.mapper.DepartmentMapper">
 
-    <resultMap type="com.github.valerie.wx.miniapp.model.Role" id="RoleMap">
-        <result property="id" column="ID" jdbcType="BIGINT"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="namezh" column="nameZh" jdbcType="VARCHAR"/>
+    <resultMap type="com.github.valerie.wx.miniapp.model.Department" id="DepartmentMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="name" column="Name" jdbcType="VARCHAR"/>
+        <result property="parentId" column="Parent_ID" jdbcType="INTEGER"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
-        <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
         <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <resultMap id="DepartmentWithChildren" type="com.github.valerie.wx.miniapp.model.Department" extends="DepartmentMap">
+        <collection property="children" ofType="com.github.valerie.wx.miniapp.model.Department"
+                    select="com.github.valerie.wx.miniapp.mapper.DepartmentMapper.getAllDepartmentsByParentId" column="id"/>
+    </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, name, nameZh, Status, Note, Creat_Time, Update_Time, temp_a, temp_b    
+        ID, Name, Parent_ID, Status, temp_a, temp_b
     </sql>
 
-    <select id="getUserRolesById" resultMap="RoleMap">
-        select role.*
-        from role left join user_role on role.ID = user_role.Role_ID and user_role.User_ID = #{id}
+    <select id="getAllDepartmentsByParentId" resultMap="DepartmentWithChildren">
+        select * from department where Parent_ID = #{pid};
     </select>
 
     <!--查询单个-->
-    <select id="selectById" resultMap="RoleMap">
+    <select id="selectById" resultMap="DepartmentMap">
         select
         <include refid="Base_Column_List" />
-        from role
+        from department
         where ID = #{id}
     </select>
 
     <!--查询指定行数据-->
-    <select id="selectAllPaging" resultMap="RoleMap">
+    <select id="selectAllPaging" resultMap="DepartmentMap">
         select
         <include refid="Base_Column_List" />
-        from role
+        from department
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAll" resultMap="RoleMap">
+    <select id="selectAll" resultMap="DepartmentMap">
         select
         <include refid="Base_Column_List" />
-        from role
+        from department
         <where>
             <if test="id != null">
                 and ID = #{id}
             </if>
             <if test="name != null and name != ''">
-                and name = #{name}
+                and Name = #{name}
             </if>
-            <if test="namezh != null and namezh != ''">
-                and nameZh = #{namezh}
+            <if test="parentId != null">
+                and Parent_ID = #{parentId}
             </if>
             <if test="status != null">
                 and Status = #{status}
-            </if>
-            <if test="note != null and note != ''">
-                and Note = #{note}
             </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
@@ -68,25 +68,22 @@
     </select>
     
     <!--通过Map作为筛选条件查询-->
-    <select id="select" resultMap="RoleMap">
+    <select id="select" resultMap="DepartmentMap">
         select
         <include refid="Base_Column_List" />
-        from role
+        from department
         <where>
             <if test="id != null">
                 and ID = #{id}
             </if>
             <if test="name != null and name != ''">
-                and name like CONCAT('%', #{name}, '%')
+                and Name = #{name}
             </if>
-            <if test="namezh != null and namezh != ''">
-                and nameZh like CONCAT('%', #{namezh}, '%')
+            <if test="parentId != null">
+                and Parent_ID = #{parentId}
             </if>
             <if test="status != null">
                 and Status = #{status}
-            </if>
-            <if test="note != null and note != ''">
-                and Note = #{note}
             </if>
             <if test="tempA != null and tempA != ''">
                 and temp_a = #{tempA}
@@ -102,22 +99,19 @@
 
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">
-        insert into role        
+        insert into department        
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null">
                 ID,
             </if>
             <if test="name != null">
-                name,
+                Name,
             </if>
-            <if test="namezh != null">
-                nameZh,
+            <if test="parentId != null">
+                Parent_ID,
             </if>
             <if test="status != null">
                 Status,
-            </if>
-            <if test="note != null">
-                Note,
             </if>
             <if test="tempA != null">
                 temp_a,
@@ -134,14 +128,11 @@
             <if test="name != null">
                 #{name},
             </if>
-            <if test="namezh != null">
-                #{namezh},
+            <if test="parentId != null">
+                #{parentId},
             </if>
             <if test="status != null">
                 #{status},
-            </if>
-            <if test="note != null">
-                #{note},
             </if>
             <if test="tempA != null">
                 #{tempA},
@@ -154,19 +145,16 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update role
+        update department
         <set>
             <if test="name != null and name != ''">
-                name = #{name},
+                Name = #{name},
             </if>
-            <if test="namezh != null and namezh != ''">
-                nameZh = #{namezh},
+            <if test="parentId != null">
+                Parent_ID = #{parentId},
             </if>
             <if test="status != null">
                 Status = #{status},
-            </if>
-            <if test="note != null and note != ''">
-                Note = #{note},
             </if>
             <if test="tempA != null and tempA != ''">
                 temp_a = #{tempA},
@@ -180,7 +168,15 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from role where ID = #{id}
+        delete from department where ID = #{id}
     </delete>
+
+    <select id="addDep" statementType="CALLABLE">
+        call addDeparment(#{name,mode=IN,jdbcType=VARCHAR},#{parentId,mode=IN,jdbcType=INTEGER},#{result,mode=OUT,jdbcType=INTEGER},#{id,mode=OUT,jdbcType=INTEGER})
+    </select>
+
+    <select id="deleteDepById" statementType="CALLABLE">
+        call deleteDepartment(#{id,mode=IN,jdbcType=INTEGER},#{result,mode=OUT,jdbcType=INTEGER})
+    </select>
 
 </mapper>

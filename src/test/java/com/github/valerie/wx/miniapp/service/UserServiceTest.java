@@ -1,7 +1,6 @@
-package com.github.valerie.wx.miniapp.service.impl;
+package com.github.valerie.wx.miniapp.service;
 
 import com.github.valerie.wx.miniapp.model.User;
-import com.github.valerie.wx.miniapp.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 @Slf4j
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserServiceImplTest {
+public class UserServiceTest {
 
     @Autowired
     private UserService service;
@@ -66,6 +67,10 @@ public class UserServiceImplTest {
         user.setPhone("13531646616");
         int res = this.service.add(user);
         log.info("res : {}", res);
+        /*
+        User u1 = this.service.selectById(user.getId());
+        log.info("password res : {}", new BCryptPasswordEncoder().matches("0824,Love", u1.getPassword()));
+        */
     }
 
     @Test
