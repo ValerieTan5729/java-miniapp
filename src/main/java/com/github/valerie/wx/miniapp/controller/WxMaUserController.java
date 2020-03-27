@@ -1,5 +1,6 @@
 package com.github.valerie.wx.miniapp.controller;
 
+import com.github.valerie.wx.miniapp.model.Duty;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
@@ -7,6 +8,7 @@ import com.github.valerie.wx.miniapp.config.wxLogin.WxAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +60,7 @@ public class WxMaUserController {
             log.info("用户的openId为{}", session.getOpenid());
             log.info("用户的unionId为{}", session.getUnionid());
             // TODO 可以增加自己的逻辑，关联业务相关数据
+            log.info("before -- getCurrentUserName : {}", getCurrentUserName());
             User user = (User) this.userService.loadUserByUsername(phone);
             if (user != null) {
                 log.info("password is {}", user.getPassword());
@@ -69,6 +72,7 @@ public class WxMaUserController {
                 SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
                 request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
                 String sessionId = request.getSession().getId();
+                log.info("after -- getCurrentUserName : {}", getCurrentUserName());
                 return JsonUtils.toJson(sessionId);
             }
             return JsonUtils.toJson(session);
@@ -151,6 +155,7 @@ public class WxMaUserController {
     public String token(@PathVariable String appid) throws WxErrorException {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
         String token = wxService.getAccessToken();
+        log.info("before -- getCurrentUserName : {}", getCurrentUserName());
         log.info("token = {}", token);
         User user = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         log.info("user phone : {}", user.getPhone());
@@ -159,13 +164,23 @@ public class WxMaUserController {
 
     /**
      * 获取上传二维码的信息
+     *
+     * 如果需要上传带图片的表单信息, 需要RequestParam接受数据
      * */
     @PostMapping("/scan")
     public String scan(@PathVariable String appid,
-                       HttpServletRequest request,
                        @RequestParam("img") MultipartFile img) {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
         return ScanQrCodeUtils.scan(wxService, img);
+    }
+
+    public String getCurrentUserName(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("auth:{}", authentication);
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return ((User) authentication.getPrincipal()).getName();
+        }
+        return null;
     }
 
 }

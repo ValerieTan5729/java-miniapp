@@ -8,7 +8,7 @@
         <result property="phone" column="Phone" jdbcType="VARCHAR"/>
         <result property="password" column="Password" jdbcType="VARCHAR"/>
         <result property="openId" column="Open_ID" jdbcType="VARCHAR"/>
-        <result property="dutyId" column="Duty_ID" jdbcType="INTEGER"/>
+        <result property="dutyLevelId" column="Duty_Level_ID" jdbcType="INTEGER"/>
         <result property="depId" column="Dep_ID" jdbcType="INTEGER"/>
         <result property="depName" column="Dep_Name" jdbcType="VARCHAR"/>
         <result property="remark" column="Remark" jdbcType="VARCHAR"/>
@@ -27,7 +27,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        user.ID, user.Name, user.Phone, user.Password, user.Open_ID, user.Duty_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
+        user.ID, user.Name, user.Phone, user.Password, user.Open_ID, user.Duty_Level_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
     </sql>
 
     <select id="loadUserByPhone" resultMap="UserWithRoles">
@@ -89,8 +89,8 @@
             <if test="openId != null and openId != ''">
                 and user.Open_ID = #{openId}
             </if>
-            <if test="dutyId != null">
-                and user.Duty_ID = #{dutyId}
+            <if test="dutyLevelId != null">
+                and user.Duty_Level_ID = #{dutyLevelId}
             </if>
             <if test="depId != null">
                 and user.Dep_ID = #{depId}
@@ -131,8 +131,8 @@
             <if test="openId != null and openId != ''">
                 and user.Open_ID = #{openId}
             </if>
-            <if test="dutyId != null">
-                and user.Duty_ID = #{dutyId}
+            <if test="dutyLevelId != null">
+                and user.Duty_Level_ID = #{dutyLevelId}
             </if>
             <if test="depId != null">
                 and user.Dep_ID = #{depId}
@@ -177,8 +177,8 @@
             <if test="openId != null">
                 Open_ID,
             </if>
-            <if test="dutyId != null">
-                Duty_ID,
+            <if test="dutyLevelId != null">
+                Duty_Level_ID,
             </if>
             <if test="depId != null">
                 Dep_ID,
@@ -216,8 +216,8 @@
             <if test="openId != null">
                 #{openId},
             </if>
-            <if test="dutyId != null">
-                #{dutyId},
+            <if test="dutyLevelId != null">
+                #{dutyLevelId},
             </if>
             <if test="depId != null">
                 #{depId},
@@ -256,8 +256,8 @@
             <if test="openId != null and openId != ''">
                 Open_ID = #{openId},
             </if>
-            <if test="dutyId != null">
-                Duty_ID = #{dutyId},
+            <if test="dutyLevelId != null">
+                Duty_Level_ID = #{dutyLevelId},
             </if>
             <if test="depId != null">
                 Dep_ID = #{depId},

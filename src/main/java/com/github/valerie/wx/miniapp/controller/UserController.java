@@ -1,7 +1,10 @@
 package com.github.valerie.wx.miniapp.controller;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.github.valerie.wx.miniapp.config.WxMaConfiguration;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
+import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +15,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

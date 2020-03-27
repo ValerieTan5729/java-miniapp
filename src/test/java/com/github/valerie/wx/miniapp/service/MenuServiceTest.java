@@ -37,6 +37,12 @@ public class MenuServiceTest {
     }
 
     @Test
+    public void getMenuByUserID() {
+        Menu res = this.service.getMenuByUserID((long) 1);
+        log.info("res:{}", res);
+    }
+
+    @Test
     public void selectById() {
         Menu res = this.service.selectById((long) 5);
         log.info("res:{}", res);

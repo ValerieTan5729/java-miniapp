@@ -42,6 +42,13 @@
                   left join role on role.ID = menu_role.Role_ID
         order by menu.ID
     </select>
+    
+    <select id="getMenuByUserID" resultMap="MenuWithChildren">
+        select menu.*
+        from menu left join menu_role on menu.ID = menu_role.Menu_ID
+                  left join user_role on user_role.Role_ID = menu_role.Role_ID
+        where user_role.User_ID = #{userId} and menu.Parent_Id = 0
+    </select>
 
     <!--查询单个-->
     <select id="selectById" resultMap="MenuMap">

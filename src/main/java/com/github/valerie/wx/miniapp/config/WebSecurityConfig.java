@@ -56,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // web.ignoring().antMatchers("/**/**", "/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // 忽略的url无法获取当前用户的登录信息
         web.ignoring().antMatchers("/login","/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // web.ignoring().antMatchers("/login","/wx/user/wxeb195511809cd1ef/login","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
     }
 
     @Override
@@ -75,6 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     return object;
                 }
             })
+            //and 方法表示结束当前标签，上下文回到HttpSecurity，开启新一轮的配置
             .and()
             .formLogin()
             .usernameParameter("phone")
@@ -82,6 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // 登录时候访问的url
             .loginProcessingUrl("/login")
             // .loginPage("/login")
+            // permitAll 表示登录相关的页面/接口不要被拦截
             .permitAll()
             // 定义登录页面，未登录时，访问一个需要登录才能访问的接口，会自动跳转到该页面
             // .loginPage("/login")

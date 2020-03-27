@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.valerie.wx.miniapp.mapper.RecordMapper">
+
+    <resultMap type="com.github.valerie.wx.miniapp.model.Record" id="RecordMap">
+        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="userId" column="User_ID" jdbcType="INTEGER"/>
+        <result property="dutyId" column="Duty_ID" jdbcType="INTEGER"/>
+        <result property="date" column="Date" jdbcType="TIMESTAMP"/>
+        <result property="place" column="Place" jdbcType="VARCHAR"/>
+        <result property="imgPath" column="Img_Path" jdbcType="VARCHAR"/>
+        <result property="remark" column="Remark" jdbcType="VARCHAR"/>
+        <result property="status" column="Status" jdbcType="INTEGER"/>
+        <result property="note" column="Note" jdbcType="VARCHAR"/>
+        <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
+        <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        ID, User_ID, Duty_ID, Date, Place, Img_Path, Remark, Status, Note, temp_a, temp_b
+    </sql>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="RecordMap">
+        select
+        <include refid="Base_Column_List" />
+        from record
+        where ID = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="selectAllPaging" resultMap="RecordMap">
+        select
+        <include refid="Base_Column_List" />
+        from record
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAll" resultMap="RecordMap">
+        select
+        <include refid="Base_Column_List" />
+        from record
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="userId != null">
+                and User_ID = #{userId}
+            </if>
+            <if test="dutyId != null">
+                and Duty_ID = #{dutyId}
+            </if>
+            <if test="date != null">
+                and Date = #{date}
+            </if>
+            <if test="place != null and place != ''">
+                and Place = #{place}
+            </if>
+            <if test="imgPath != null and imgPath != ''">
+                and Img_Path = #{imgPath}
+            </if>
+            <if test="remark != null and remark != ''">
+                and Remark = #{remark}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+    </select>
+    
+    <!--通过Map作为筛选条件查询-->
+    <select id="select" resultMap="RecordMap">
+        select
+        <include refid="Base_Column_List" />
+        from record
+        <include refid="selectCondition" />
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+    
+    <select id="count" resultType="java.lang.Integer">
+        select Count(*)
+        from record
+        <include refid="selectCondition" />
+    </select>
+    
+    <sql id="selectCondition">
+        <where>
+             <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="userId != null">
+                and User_ID = #{userId}
+            </if>
+            <if test="dutyId != null">
+                and Duty_ID = #{dutyId}
+            </if>
+            <if test="date != null">
+                and Date = #{date}
+            </if>
+            <if test="place != null and place != ''">
+                and Place = #{place}
+            </if>
+            <if test="imgPath != null and imgPath != ''">
+                and Img_Path = #{imgPath}
+            </if>
+            <if test="remark != null and remark != ''">
+                and Remark = #{remark}
+            </if>
+            <if test="status != null">
+                and Status = #{status}
+            </if>
+            <if test="note != null and note != ''">
+                and Note = #{note}
+            </if>
+            <if test="tempA != null and tempA != ''">
+                and temp_a = #{tempA}
+            </if>
+            <if test="tempB != null and tempB != ''">
+                and temp_b = #{tempB}
+            </if>
+        </where>
+    </sql>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into record        
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="userId != null">
+                User_ID,
+            </if>
+            <if test="dutyId != null">
+                Duty_ID,
+            </if>
+            <if test="date != null">
+                Date,
+            </if>
+            <if test="place != null">
+                Place,
+            </if>
+            <if test="imgPath != null">
+                Img_Path,
+            </if>
+            <if test="remark != null">
+                Remark,
+            </if>
+            <if test="status != null">
+                Status,
+            </if>
+            <if test="note != null">
+                Note,
+            </if>
+            <if test="tempA != null">
+                temp_a,
+            </if>
+            <if test="tempB != null">
+                temp_b,
+            </if>
+        </trim>
+        values        
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="dutyId != null">
+                #{dutyId},
+            </if>
+            <if test="date != null">
+                #{date},
+            </if>
+            <if test="place != null">
+                #{place},
+            </if>
+            <if test="imgPath != null">
+                #{imgPath},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="note != null">
+                #{note},
+            </if>
+            <if test="tempA != null">
+                #{tempA},
+            </if>
+            <if test="tempB != null">
+                #{tempB},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update record
+        <set>
+            <if test="userId != null">
+                User_ID = #{userId},
+            </if>
+            <if test="dutyId != null">
+                Duty_ID = #{dutyId},
+            </if>
+            <if test="date != null">
+                Date = #{date},
+            </if>
+            <if test="place != null and place != ''">
+                Place = #{place},
+            </if>
+            <if test="imgPath != null and imgPath != ''">
+                Img_Path = #{imgPath},
+            </if>
+            <if test="remark != null and remark != ''">
+                Remark = #{remark},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+            <if test="note != null and note != ''">
+                Note = #{note},
+            </if>
+            <if test="tempA != null and tempA != ''">
+                temp_a = #{tempA},
+            </if>
+            <if test="tempB != null and tempB != ''">
+                temp_b = #{tempB},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from record where ID = #{id}
+    </delete>
+
+</mapper>

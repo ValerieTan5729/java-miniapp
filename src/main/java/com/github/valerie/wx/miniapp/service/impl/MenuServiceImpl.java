@@ -39,6 +39,14 @@ public class MenuServiceImpl implements MenuService {
     }
 
     /**
+     * 根据用户ID获取相应的菜单
+     * */
+    @Override
+    public Menu getMenuByUserID(Long userId) {
+        return this.menuMapper.getMenuByUserID(userId);
+    }
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键
