@@ -4,7 +4,11 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.github.valerie.wx.miniapp.config.WxMaConfiguration;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
+import com.github.valerie.wx.miniapp.utils.NoteUtils;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
+import com.github.valerie.wx.miniapp.utils.UserUtils;
+import com.github.valerie.wx.miniapp.utils.response.RespBean;
+import com.github.valerie.wx.miniapp.utils.response.RespPageBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,40 +47,9 @@ public class UserController {
      */
     @ApiOperation("通过ID查询单条数据")
     @ApiImplicitParam(name="id", value="ID", defaultValue="1", required=true)
-    @GetMapping("/select/{id}")
-    public User selectOne(@PathVariable Long id) {
-        return this.userService.selectById(id);
-    }
-    
-    /**
-     * 分页查询
-     *
-     * @param page 查询起始页数
-     * @param limit 查询条数
-     * @return 对象列表
-     */
-    @ApiOperation("分页查询数据")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name="page", value="页码", defaultValue="1", required=true),
-        @ApiImplicitParam(name="limit", value="每页展示的条数", defaultValue="10", required=true)
-    })
-    @GetMapping("/page/{page}/{limit}")
-    public List<User> selectAllPaging(@PathVariable int page, @PathVariable int limit) {
-        int offset = (page - 1) * limit;
-        return this.userService.selectAllPaging(offset, limit);
-    }
-    
-    /**
-     * 通过实体作为筛选条件查询
-     *
-     * @param user 实例对象
-     * @return 对象列表
-     */
-    @ApiOperation("通过实体作为筛选条件查询")
-    @ApiImplicitParam(name="", value="", defaultValue="", required=true)
-    @PostMapping("/select/model")
-    public List<User> selectAll(User user) {
-        return this.userService.selectAll(user);
+    @GetMapping("/{id}")
+    public RespBean selectOne(@PathVariable Long id) {
+        return RespBean.ok("获取成功", this.userService.selectById(id));
     }
     
     /**
@@ -90,15 +61,29 @@ public class UserController {
      */
     @ApiOperation("条件查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="page", value="页码", defaultValue="1", required=true),
-            @ApiImplicitParam(name="limit", value="每页展示的条数", defaultValue="10", required=true)
+        @ApiImplicitParam(name="page", value="页码", defaultValue="1", required=true),
+        @ApiImplicitParam(name="limit", value="每页展示的条数", defaultValue="10", required=true),
+        @ApiImplicitParam(name="name", value="用户名", defaultValue="admin"),
+        @ApiImplicitParam(name="phone", value="用户手机号码", defaultValue="156"),
+        @ApiImplicitParam(name="depId", value="用户所属部门的ID", defaultValue="2")
     })
     @GetMapping("/")
-    public List<User> select(@RequestParam("page") int page, @RequestParam("limit") int limit) {
+    public RespBean select(@RequestParam(value = "page", defaultValue = "1") int page,
+                           @RequestParam(value = "limit", defaultValue = "10") int limit,
+                           @RequestParam(value = "name", required = false) String name,
+                           @RequestParam(value = "phone", required = false) String phone,
+                           @RequestParam(value = "depId", required = false) Integer depId) {
+        log.info("name : {}", name);
         Map<String, Object> param = new HashMap<>();
         param.put("page", (page - 1) * limit);
         param.put("limit", limit);
-        return this.userService.select(param);
+        param.put("status", 0);
+        param.put("name", name);
+        param.put("phone", phone);
+        param.put("depId", depId);
+        List<User> res = this.userService.select(param);
+        Long total = this.userService.count(param);
+        return RespBean.ok("获取成功", new RespPageBean(total, res));
     }
     
     /**
@@ -107,10 +92,22 @@ public class UserController {
      * @param user 实例对象
      * @return 实例对象
      */
+    @ApiOperation("新增用户数据")
     @PostMapping("/add")
-    public User add(@RequestBody User user) {
-        this.userService.add(user);
-        return user;
+    public RespBean add(@RequestBody User user) {
+        User exist = this.userService.findUserByPhone(user.getPhone());
+        if (exist != null) {
+            return RespBean.error("手机号码已关联用户" + exist.getName() + ", 请修改手机号码");
+        }
+        if (user.getPassword() != null) {
+            // 密码加盐处理
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
+        user.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
+        if (this.userService.add(user) == 1) {
+            return RespBean.ok("新增用户信息成功");
+        }
+        return RespBean.error("新增用户信息失败");
     }
 
     /**
@@ -119,12 +116,44 @@ public class UserController {
      * @param user 实例对象
      * @return 实例对象
      */
+    @ApiOperation("修改用户基本信息")
     @PostMapping("/update")
-    public User update(@RequestBody User user) {
-        log.info("user update info : {}", user.toString());
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        this.userService.update(user);
-        return this.userService.selectById(user.getId());
+    public RespBean update(@RequestBody User user) {
+        User exist = this.userService.findUserByPhone(user.getPhone());
+        if (exist != null && !exist.getId().equals(user.getId())) {
+            return RespBean.error("手机号码已关联用户" + exist.getName() + ", 请修改手机号码");
+        }
+        String note = user.getNote();
+        if (note == null) {
+            note = this.userService.selectById(user.getId()).getNote();
+        }
+        user.setNote(note + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "修改基本信息"));
+        if (this.userService.update(user) == 1) {
+            return RespBean.ok("修改用户信息成功", this.userService.selectById(user.getId()));
+        }
+        return RespBean.error("更新用户信息失败");
+    }
+
+    /**
+     * 修改用户密码
+     *
+     * @return 实例对象
+     */
+    @ApiOperation("修改用户密码")
+    @PostMapping("/{id}/password")
+    public RespBean updatePassword(@PathVariable Long id, @RequestParam("oldPass") String oldPassword, @RequestParam("newPass") String newPassword) {
+        User user = this.userService.selectById(id);
+        if (new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
+            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+            user.setNote(user.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "修改密码"));
+            if (this.userService.update(user) == 1) {
+                return RespBean.ok("修改密码成功");
+            } else {
+                return RespBean.error("修改密码失败");
+            }
+        } else {
+            return RespBean.error("旧密码错误");
+        }
     }
 
     /**
@@ -133,9 +162,33 @@ public class UserController {
      * @param id 主键
      * @return 是否成功
      */
-    @DeleteMapping("/delete/{id}")
-    public boolean deleteById(@PathVariable Long id) {
-        return this.userService.deleteById(id) > 0;
+    @ApiOperation("删除用户")
+    @DeleteMapping("/{id}")
+    public RespBean deleteById(@PathVariable Long id) {
+        User user = this.userService.selectById(id);
+        user.setNote(user.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "删除"));
+        user.setStatus(1);
+        if (this.userService.update(user) == 1) {
+            return RespBean.ok("删除用户成功");
+        }
+        return RespBean.error("删除用户失败");
+    }
+
+    /**
+     * 给用户分配权限
+     *
+     * @param userId 用户ID
+     * @param roleList 角色ID列表
+     * @return 实例对象
+     * */
+    @ApiOperation("给用户分配权限")
+    @PutMapping("/role")
+    public RespBean updateUserRole(@RequestParam("userId") Long userId, @RequestParam("roleList") List<Long> roleList) {
+        log.info("userId : {}, roleList : {}", userId, roleList);
+        if (this.userService.updateUserRole(userId, roleList)) {
+            return RespBean.ok("更新成功!");
+        }
+        return RespBean.error("更新失败!");
     }
 
 }

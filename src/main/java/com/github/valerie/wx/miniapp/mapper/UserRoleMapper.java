@@ -1,22 +1,23 @@
 package com.github.valerie.wx.miniapp.mapper;
 
-import com.github.valerie.wx.miniapp.model.Role;
-import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.model.UserRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 用户信息(User)表数据库访问层mapper
+ * 用户与权限之间的关系(UserRole)表数据库访问层mapper
  *
  * @author makejava
- * @since 2020-03-17 14:42:54
+ * @since 2020-03-30 10:09:22
  */
 @Component
-public interface UserMapper {
+public interface UserRoleMapper {
 
-    User loadUserByPhone(String phone);
+    void deleteByUserId(Long userId);
+
+    int addUserRole(@Param("userId") Long userId, @Param("roleList") List<Long> roleList);
 
     /**
      * 通过ID查询单条数据
@@ -24,11 +25,7 @@ public interface UserMapper {
      * @param id 主键
      * @return 实例对象
      */
-    User selectById(Long id);
-
-    User selectIdWithRole(Long id);
-
-    List<Role> getUserRolesById(Long id);
+    UserRole selectById(Long id);
 
     /**
      * 分页查询
@@ -37,16 +34,16 @@ public interface UserMapper {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<User> selectAllPaging(@Param("offset") int offset, @Param("limit") int limit);
+    List<UserRole> selectAllPaging(@Param("offset") int offset, @Param("limit") int limit);
 
 
     /**
      * 通过实体作为筛选条件查询
      *
-     * @param user 实例对象
+     * @param userRole 实例对象
      * @return 对象列表
      */
-    List<User> selectAll(User user);
+    List<UserRole> selectAll(UserRole userRole);
     
     /**
      * 通过Map作为筛选条件查询
@@ -54,31 +51,31 @@ public interface UserMapper {
      * @param param 查询条件
      * @return 对象列表
      */
-    List<User> select(Map<String, Object> param);
-
+    List<UserRole> select(Map<String, Object> param);
+    
     /**
-     * 总行数
+     * 获取满足条件的条目数
      *
      * @param param 查询条件
-     * @return 总行数
-     * */
-    Long count(Map<String, Object> param);
+     * @return int
+     */
+    Integer count(Map<String, Object> param);
 
     /**
      * 新增数据
      *
-     * @param user 实例对象
+     * @param userRole 实例对象
      * @return 影响行数
      */
-    int add(User user);
+    int add(UserRole userRole);
 
     /**
      * 修改数据
      *
-     * @param user 实例对象
+     * @param userRole 实例对象
      * @return 影响行数
      */
-    int update(User user);
+    int update(UserRole userRole);
 
     /**
      * 通过主键删除数据

@@ -9,6 +9,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(SQLException.class)
     public RespBean sqlException(SQLException e) {
         if (e instanceof SQLIntegrityConstraintViolationException) {

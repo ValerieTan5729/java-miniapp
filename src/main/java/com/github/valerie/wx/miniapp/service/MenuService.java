@@ -88,4 +88,13 @@ public interface MenuService {
      */
     int deleteById(Long id);
 
+    /**
+     * 为相应的角色添加相应的菜单列表
+     *
+     * @param roleId 角色ID
+     * @param menuList 菜单列表
+     * @return 是否成功
+     * */
+    boolean updateMenuRole(Long roleId, List<Long> menuList);
+
 }

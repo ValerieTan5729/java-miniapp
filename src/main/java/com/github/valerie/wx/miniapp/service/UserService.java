@@ -42,6 +42,11 @@ public interface UserService extends UserDetailsService {
      * @return 对象列表
      */
     List<User> selectAll(User user);
+
+    /**
+     * 通过手机号码查询用户
+     * */
+    User findUserByPhone(String phone);
     
     /**
      * 通过Map作为筛选条件查询
@@ -50,6 +55,14 @@ public interface UserService extends UserDetailsService {
      * @return 对象列表
      */
     List<User> select(Map<String, Object> param);
+
+    /**
+     * 总行数
+     *
+     * @param param 查询条件
+     * @return 总行数
+     * */
+    Long count(Map<String, Object> param);
 
     /**
      * 新增数据
@@ -74,5 +87,14 @@ public interface UserService extends UserDetailsService {
      * @return 影响行数
      */
     int deleteById(Long id);
+
+    /**
+     * 为相应的用户添加相应的角色列表
+     *
+     * @param userId 用户ID
+     * @param roleList 角色列表
+     * @return 是否成功
+     * */
+    boolean updateUserRole(Long userId, List<Long> roleList);
 
 }

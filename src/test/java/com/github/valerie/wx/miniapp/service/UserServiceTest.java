@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,5 +95,14 @@ public class UserServiceTest {
     public void loadUserByUsername() {
         User user = ((User) this.service.loadUserByUsername("15692009328"));
         log.info("user info is {}", user.toString());
+    }
+
+    @Test
+    public void updateUserRole() {
+        List<Long> roleList = new ArrayList<>();
+        roleList.add((long) 1);
+        roleList.add((long) 2);
+        boolean res = this.service.updateUserRole((long) 1, roleList);
+        log.info("res is {}", res);
     }
 }

@@ -1,11 +1,14 @@
 package com.github.valerie.wx.miniapp.service.impl;
 
+import com.github.valerie.wx.miniapp.mapper.MenuRoleMapper;
 import com.github.valerie.wx.miniapp.model.Menu;
 import com.github.valerie.wx.miniapp.mapper.MenuMapper;
 import com.github.valerie.wx.miniapp.service.MenuService;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,9 @@ public class MenuServiceImpl implements MenuService {
         
     @Autowired
     private MenuMapper menuMapper;
+
+    @Autowired
+    private MenuRoleMapper roleMapper;
 
     /**
      * 通过Parent_ID查询所有部门信息
@@ -124,5 +130,22 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public int deleteById(Long id) {
         return this.menuMapper.deleteById(id);
+    }
+
+    /**
+     * 为相应的角色添加相应的菜单列表
+     *
+     * @param roleId 角色ID
+     * @param menuList 菜单列表
+     * @return 是否成功
+     * */
+    @Override
+    @Transactional
+    public boolean updateMenuRole(Long roleId, List<Long> menuList) {
+        roleMapper.deleteByRoleId(roleId);
+        if (menuList == null || menuList.size() == 0) {
+            return true;
+        }
+        return roleMapper.addMenuRole(roleId, menuList) == menuList.size();
     }
 }

@@ -18,7 +18,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .pathMapping("/")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.valerie.demo"))
+                .apis(RequestHandlerSelectors.basePackage("com.github.valerie.wx.miniapp"))
                 .paths(PathSelectors.any())
                 .build().apiInfo(new ApiInfoBuilder()
                                  .title("Spring Boot API 文档") // 文档标题

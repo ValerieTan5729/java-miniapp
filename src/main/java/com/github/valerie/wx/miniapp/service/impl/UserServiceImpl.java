@@ -1,5 +1,6 @@
 package com.github.valerie.wx.miniapp.service.impl;
 
+import com.github.valerie.wx.miniapp.mapper.UserRoleMapper;
 import com.github.valerie.wx.miniapp.model.Role;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.mapper.UserMapper;
@@ -9,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,9 @@ public class UserServiceImpl implements UserService {
         
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserRoleMapper roleMapper;
 
     /**
      * 通过ID查询单条数据
@@ -62,6 +68,14 @@ public class UserServiceImpl implements UserService {
     public List<User> selectAll(User user) {
         return this.userMapper.selectAll(user);
     }
+
+    /**
+     * 通过手机号码查询用户
+     * */
+    @Override
+    public User findUserByPhone(String phone) {
+        return this.userMapper.loadUserByPhone(phone);
+    }
     
     /**
      * 通过Map作为筛选条件查询
@@ -72,6 +86,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> select(Map<String, Object> param) {
         return this.userMapper.select(param);
+    }
+
+    /**
+     * 总行数
+     *
+     * @param param 查询条件
+     * @return 总行数
+     * */
+    @Override
+    public Long count(Map<String, Object> param) {
+        return this.userMapper.count(param);
     }
 
     /**
@@ -115,7 +140,20 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("该用户不存在!");
         }
-        // user.setRoles(this.userMapper.getUserRolesById(user.getId()));
         return user;
+    }
+
+    /**
+     * 为相应的用户添加相应的角色列表
+     *
+     * @param userId 用户ID
+     * @param roleList 角色列表
+     * @return 是否成功
+     * */
+    @Override
+    @Transactional
+    public boolean updateUserRole(Long userId, List<Long> roleList) {
+        roleMapper.deleteByUserId(userId);
+        return roleMapper.addUserRole(userId, roleList) == roleList.size();
     }
 }

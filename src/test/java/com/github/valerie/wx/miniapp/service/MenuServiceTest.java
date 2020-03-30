@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,5 +97,14 @@ public class MenuServiceTest {
     public void deleteById() {
         int res = this.service.deleteById((long) 8);
         log.info("res:{}", res);
+    }
+
+    @Test
+    public void updateMenuRole() {
+        List<Long> menuList = new ArrayList<>();
+        menuList.add((long) 1);
+        menuList.add((long) 2);
+        boolean res = this.service.updateMenuRole((long) 2, menuList);
+        log.info("res is {}", res);
     }
 }

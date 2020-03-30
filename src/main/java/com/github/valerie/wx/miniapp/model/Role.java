@@ -46,18 +46,6 @@ public class Role {
     private String note;
     
     /**
-    * 创建时间
-    */    
-    @ApiModelProperty("创建时间")
-    private Date creatTime;
-    
-    /**
-    * 更新时间
-    */    
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
-    
-    /**
     * 备用字段1
     */    
     @ApiModelProperty("备用字段1")

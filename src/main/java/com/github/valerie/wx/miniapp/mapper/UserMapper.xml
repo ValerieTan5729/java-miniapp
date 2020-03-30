@@ -32,9 +32,9 @@
 
     <select id="loadUserByPhone" resultMap="UserWithRoles">
         select user.*, role.ID as rid, role.name as rname, role.nameZh as rnamezh
-        from user join user_role on user_role.User_ID = user.ID
-                  join role on role.ID = user_role.Role_ID
-        where user.Phone = #{phone}
+        from user left join user_role on user_role.User_ID = user.ID
+                  left join role on role.ID = user_role.Role_ID
+        where user.Phone = #{phone} and user.Status = 0
     </select>
 
     <!--查询单个-->
@@ -118,12 +118,25 @@
         select
         <include refid="Base_Column_List" />, department.Name as Dep_Name
         from user left join department on department.ID = user.Dep_ID
+        <include refid="selectUserCondition" />
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select COUNT(*)
+        from user
+        <include refid="selectUserCondition" />
+    </select>
+
+    <sql id="selectUserCondition">
         <where>
             <if test="name != null and name != ''">
                 and user.Name like CONCAT('%', #{name}, '%')
             </if>
             <if test="phone != null and phone != ''">
-                and user.Phone = #{phone}
+                and user.Phone like CONCAT('%', #{phone}, '%')
             </if>
             <if test="password != null and password != ''">
                 and user.Password = #{password}
@@ -153,10 +166,7 @@
                 and user.temp_b = #{tempB}
             </if>
         </where>
-        <if test="page != null and limit != null">
-            limit #{page}, #{limit}
-        </if>
-    </select>
+    </sql>
 
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">
@@ -285,5 +295,9 @@
     <delete id="deleteById">
         delete from user where ID = #{id}
     </delete>
+
+    <update id="deleteUser">
+        update user set Status = 1 where ID = #{id}
+    </update>
 
 </mapper>

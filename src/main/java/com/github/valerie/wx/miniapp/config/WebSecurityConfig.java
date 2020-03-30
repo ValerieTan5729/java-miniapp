@@ -55,8 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 忽视微信小程序的API接口
         // web.ignoring().antMatchers("/**/**", "/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // 忽略的url无法获取当前用户的登录信息
-        web.ignoring().antMatchers("/login","/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // web.ignoring().antMatchers("/login","/wx/user/wxeb195511809cd1ef/login","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        web.ignoring().antMatchers("/*/**");
     }
 
     @Override
