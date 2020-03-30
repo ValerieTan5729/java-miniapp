@@ -40,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
      * @return 实例对象
      */
     @Override
-    public Role selectById(Integer id) {
+    public Role selectById(Long id) {
         return this.roleMapper.selectById(id);
     }
 
@@ -78,6 +78,11 @@ public class RoleServiceImpl implements RoleService {
         return this.roleMapper.select(param);
     }
 
+    @Override
+    public Integer count(Map<String, Object> param) {
+        return this.roleMapper.count(param);
+    }
+
     /**
      * 新增数据
      *
@@ -109,7 +114,7 @@ public class RoleServiceImpl implements RoleService {
      * @return 是否成功
      */
     @Override
-    public int deleteById(Integer id) {
+    public int deleteById(Long id) {
         return this.roleMapper.deleteById(id);
     }
 }

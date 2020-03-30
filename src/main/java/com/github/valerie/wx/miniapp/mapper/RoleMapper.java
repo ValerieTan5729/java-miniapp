@@ -29,7 +29,7 @@ public interface RoleMapper {
      * @param id 主键
      * @return 实例对象
      */
-    Role selectById(Integer id);
+    Role selectById(Long id);
 
     /**
      * 分页查询
@@ -57,6 +57,8 @@ public interface RoleMapper {
      */
     List<Role> select(Map<String, Object> param);
 
+    Integer count(Map<String, Object> param);
+
     /**
      * 新增数据
      *
@@ -79,6 +81,6 @@ public interface RoleMapper {
      * @param id 主键
      * @return 影响行数
      */
-    int deleteById(Integer id);
+    int deleteById(Long id);
 
 }

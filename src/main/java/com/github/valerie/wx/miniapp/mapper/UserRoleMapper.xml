@@ -3,9 +3,9 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.UserRoleMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.UserRole" id="UserRoleMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
-        <result property="userId" column="User_ID" jdbcType="INTEGER"/>
-        <result property="roleId" column="Role_ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="userId" column="User_ID" jdbcType="BIGINT"/>
+        <result property="roleId" column="Role_ID" jdbcType="BIGINT"/>
     </resultMap>
     
     <sql id="Base_Column_List" >

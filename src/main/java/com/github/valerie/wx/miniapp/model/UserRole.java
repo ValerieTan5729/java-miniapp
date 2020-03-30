@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel
 @Data
 public class UserRole {
-        /**
+    /**
     * ID
     */    
     @ApiModelProperty("ID")

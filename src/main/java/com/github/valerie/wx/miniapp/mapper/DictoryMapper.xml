@@ -3,9 +3,9 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.DictoryMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.Dictory" id="DictoryMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="Name" jdbcType="VARCHAR"/>
-        <result property="parentId" column="Parent_ID" jdbcType="INTEGER"/>
+        <result property="parentId" column="Parent_ID" jdbcType="BIGINT"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>

@@ -3,9 +3,9 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.RecordMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.Record" id="RecordMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
-        <result property="userId" column="User_ID" jdbcType="INTEGER"/>
-        <result property="dutyId" column="Duty_ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
+        <result property="userId" column="User_ID" jdbcType="BIGINT"/>
+        <result property="dutyId" column="Duty_ID" jdbcType="BIGINT"/>
         <result property="date" column="Date" jdbcType="TIMESTAMP"/>
         <result property="place" column="Place" jdbcType="VARCHAR"/>
         <result property="imgPath" column="Img_Path" jdbcType="VARCHAR"/>

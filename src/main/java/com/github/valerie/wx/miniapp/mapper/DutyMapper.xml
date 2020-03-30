@@ -3,7 +3,7 @@
 <mapper namespace="com.github.valerie.wx.miniapp.mapper.DutyMapper">
 
     <resultMap type="com.github.valerie.wx.miniapp.model.Duty" id="DutyMap">
-        <result property="id" column="ID" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="BIGINT"/>
         <result property="name" column="Name" jdbcType="VARCHAR"/>
         <result property="beginDate" column="Begin_Date" jdbcType="TIMESTAMP"/>
         <result property="endDate" column="End_Date" jdbcType="TIMESTAMP"/>

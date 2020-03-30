@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel
 @Data
 public class MenuRole {
-        /**
+    /**
     * ID
     */    
     @ApiModelProperty("ID")
