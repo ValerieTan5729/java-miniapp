@@ -57,6 +57,8 @@ public interface DepartmentMapper {
      */
     List<Department> select(Map<String, Object> param);
 
+    Long count(Map<String, Object> param);
+
     /**
      * 新增数据
      *

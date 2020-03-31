@@ -29,10 +29,10 @@ public class MenuServiceImpl implements MenuService {
     private MenuRoleMapper roleMapper;
 
     /**
-     * 通过Parent_ID查询所有部门信息
+     * 通过Parent_ID查询所有菜单信息
      */
     @Override
-    public List<Menu> getAllMenusByParentId(Integer pid) {
+    public List<Menu> getAllMenusByParentId(Long pid) {
         return this.menuMapper.getAllMenusByParentId(pid);
     }
 
@@ -95,6 +95,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<Menu> select(Map<String, Object> param) {
         return this.menuMapper.select(param);
+    }
+
+    @Override
+    public Long count(Map<String, Object> param) {
+        return this.menuMapper.count(param);
     }
 
     /**

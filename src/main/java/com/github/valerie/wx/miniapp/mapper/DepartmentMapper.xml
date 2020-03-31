@@ -21,7 +21,7 @@
     </sql>
 
     <select id="getAllDepartmentsByParentId" resultMap="DepartmentWithChildren">
-        select * from department where Parent_ID = #{pid};
+        select * from department where Parent_ID = #{pid} and Status = 0;
     </select>
 
     <!--查询单个-->
@@ -72,6 +72,19 @@
         select
         <include refid="Base_Column_List" />
         from department
+        <include refid="selectCondition" />
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select count(*)
+        from department
+        <include refid="selectCondition" />
+    </select>
+
+    <sql id="selectCondition">
         <where>
             <if test="id != null">
                 and ID = #{id}
@@ -92,10 +105,7 @@
                 and temp_b = #{tempB}
             </if>
         </where>
-        <if test="page != null and limit != null">
-            limit #{page}, #{limit}
-        </if>
-    </select>
+    </sql>
 
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">

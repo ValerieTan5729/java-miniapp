@@ -86,6 +86,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         return this.departmentMapper.select(param);
     }
 
+    @Override
+    public Long count(Map<String, Object> param) {
+        return this.departmentMapper.count(param);
+    }
+
     /**
      * 新增数据
      *

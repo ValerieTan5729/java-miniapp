@@ -33,21 +33,22 @@
     </sql>
 
     <select id="getAllMenusByParentId" resultMap="MenuWithChildren">
-        select * from menu where Parent_ID = #{pid};
+        select * from menu where Parent_ID = #{pid} and Status = 0;
     </select>
     
     <select id="getAllMenusWithRole" resultMap="MenuWithRole">
         select menu.*, role.ID as rid, role.name as rname, role.nameZh as rnamezh
         from menu left join menu_role on menu_role.Menu_ID = menu.ID
-                  left join role on role.ID = menu_role.Role_ID
+                  left join role on role.ID = menu_role.Role_ID and role.Status = 0
+        where menu.Status = 0
         order by menu.ID
     </select>
     
     <select id="getMenuByUserID" resultMap="MenuWithChildren">
-        select menu.*
+        select DISTINCT menu.*
         from menu left join menu_role on menu.ID = menu_role.Menu_ID
                   left join user_role on user_role.Role_ID = menu_role.Role_ID
-        where user_role.User_ID = #{userId} and menu.Parent_Id = 0
+        where user_role.User_ID = #{userId} and menu.Parent_Id = 0 and menu.Status = 0
     </select>
 
     <!--查询单个-->
@@ -110,6 +111,19 @@
         select
         <include refid="Base_Column_List" />
         from menu
+        <include refid="selectCondition" />
+        <if test="page != null and limit != null">
+            limit #{page}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select count(*)
+        from menu
+        <include refid="selectCondition" />
+    </select>
+
+    <sql id="selectCondition">
         <where>
             <if test="id != null">
                 and ID = #{id}
@@ -142,10 +156,7 @@
                 and temp_b = #{tempB}
             </if>
         </where>
-        <if test="page != null and limit != null">
-            limit #{page}, #{limit}
-        </if>
-    </select>
+    </sql>
 
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">

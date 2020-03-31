@@ -1,6 +1,7 @@
 package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.Role;
+import com.github.valerie.wx.miniapp.service.MenuService;
 import com.github.valerie.wx.miniapp.service.RoleService;
 import com.github.valerie.wx.miniapp.utils.NoteUtils;
 import com.github.valerie.wx.miniapp.utils.UserUtils;
@@ -26,6 +27,9 @@ public class RoleController {
 
     @Autowired
     private RoleService service;
+
+    @Autowired
+    private MenuService menuService;
 
     /**
      * 通过主键查询单条数据
@@ -106,10 +110,22 @@ public class RoleController {
     public RespBean deleteById(@PathVariable Long id) {
         Role role = this.service.selectById(id);
         role.setNote(role.getNote() + "|" + NoteUtils.note(UserUtils.getCurrentUser().getName(), "删除"));
-        role.setStatus(0);
+        role.setStatus(1);
         if (this.service.update(role) == 1) {
             return RespBean.ok("删除角色成功");
         }
         return RespBean.error("删除角色失败");
+    }
+
+    /**
+     * 给角色分配相应的菜单列表
+     * */
+    @ApiOperation("给角色分配相应的菜单列表")
+    @PutMapping("/menu")
+    public RespBean updateRoleMenu(@RequestParam("roleId") Long roleId, @RequestParam("menuList") List<Long> menuList) {
+        if (this.menuService.updateMenuRole(roleId, menuList)) {
+            return RespBean.ok("分配成功");
+        }
+        return RespBean.error("分配失败");
     }
 }

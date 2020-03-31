@@ -24,7 +24,7 @@
     <select id="getAllDictoryByParentId" resultMap="DictoryWithChildren">
         select
         <include refid="Base_Column_List" />
-        from dictory where Parent_ID = #{pid};
+        from dictory where Parent_ID = #{pid} and Status = 0;
     </select>
 
     <!--查询单个-->

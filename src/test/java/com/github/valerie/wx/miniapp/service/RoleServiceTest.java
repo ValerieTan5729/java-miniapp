@@ -30,7 +30,7 @@ public class RoleServiceTest {
 
     @Test
     public void selectById() {
-        Role res = this.service.selectById(1);
+        Role res = this.service.selectById((long) 1);
         log.info("res:{}", res);
     }
 
@@ -79,7 +79,7 @@ public class RoleServiceTest {
 
     @Test
     public void deleteById() {
-        int res = this.service.deleteById(3);
+        int res = this.service.deleteById((long) 3);
         log.info("res:{}", res);
     }
 }

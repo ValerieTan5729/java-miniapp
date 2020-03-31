@@ -16,12 +16,12 @@ import java.util.Map;
 public interface MenuMapper {
 
     /**
-     * 通过Parent_ID查询所有部门信息
+     * 通过Parent_ID查询所有菜单信息
      *
      * @param pid parentId
      * @return 对象列表
      */
-    List<Menu> getAllMenusByParentId(Integer pid);
+    List<Menu> getAllMenusByParentId(Long pid);
 
     /**
      * 获取所有菜单权限
@@ -66,6 +66,8 @@ public interface MenuMapper {
      * @return 对象列表
      */
     List<Menu> select(Map<String, Object> param);
+
+    Long count(Map<String, Object> param);
 
     /**
      * 新增数据

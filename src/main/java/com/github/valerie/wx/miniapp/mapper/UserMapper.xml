@@ -56,7 +56,7 @@
 
     <select id="getUserRolesById" resultType="com.github.valerie.wx.miniapp.model.Role">
         select role.*
-        from role left join user_role on role.ID = user_role.Role_ID and user_role.User_ID = #{id}
+        from role left join user_role on role.ID = user_role.Role_ID and user_role.User_ID = #{id} and role.Status = 0
     </select>
 
     <!--查询指定行数据-->

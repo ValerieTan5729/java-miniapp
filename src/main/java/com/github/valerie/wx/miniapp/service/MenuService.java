@@ -18,7 +18,7 @@ public interface MenuService {
      * @param pid parentId
      * @return 对象列表
      */
-    List<Menu> getAllMenusByParentId(Integer pid);
+    List<Menu> getAllMenusByParentId(Long pid);
 
     /**
      * 获取所有菜单权限
@@ -63,6 +63,8 @@ public interface MenuService {
      * @return 对象列表
      */
     List<Menu> select(Map<String, Object> param);
+
+    Long count(Map<String, Object> param);
 
     /**
      * 新增数据

@@ -27,7 +27,7 @@ public class MenuServiceTest {
 
     @Test
     public void getAllMenusByParentId() {
-        List<Menu> res = this.service.getAllMenusByParentId(0);
+        List<Menu> res = this.service.getAllMenusByParentId((long) 0);
         log.info("res:{}", res);
     }
 
