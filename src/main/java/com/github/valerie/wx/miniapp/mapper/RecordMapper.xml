@@ -14,18 +14,21 @@
         <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
         <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
+        <result property="userName" column="User_Name" jdbcType="VARCHAR"/>
+        <result property="dutyName" column="Duty_Name" jdbcType="VARCHAR"/>
     </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, User_ID, Duty_ID, Date, Place, Img_Path, Remark, Status, Note, temp_a, temp_b
+        record.ID, record.User_ID, record.Duty_ID, record.Date, record.Place, record.Img_Path, record.Remark, record.Status, record.Note, record.temp_a, record.temp_b
     </sql>
 
     <!--查询单个-->
     <select id="selectById" resultMap="RecordMap">
         select
-        <include refid="Base_Column_List" />
-        from record
-        where ID = #{id}
+        <include refid="Base_Column_List" />, user.Name as User_Name, duty.Name as Duty_Name
+        from record left join user on user.ID = record.User_ID
+                    left join duty on duty.ID = record.Duty_ID
+        where record.ID = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -51,7 +54,13 @@
             <if test="dutyId != null">
                 and Duty_ID = #{dutyId}
             </if>
-            <if test="date != null">
+            <if test="beginDate != null and beginDate != ''">
+                and Date <![CDATA[>=]]> #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and Date <![CDATA[<=]]> #{endDate}
+            </if>
+            <if test="date != null and date != ''">
                 and Date = #{date}
             </if>
             <if test="place != null and place != ''">
@@ -81,15 +90,16 @@
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="RecordMap">
         select
-        <include refid="Base_Column_List" />
-        from record
+        <include refid="Base_Column_List" />, user.Name as User_Name, duty.Name as Duty_Name
+        from record left join user on user.ID = record.User_ID
+                    left join duty on duty.ID = record.Duty_ID
         <include refid="selectCondition" />
         <if test="page != null and limit != null">
             limit #{page}, #{limit}
         </if>
     </select>
     
-    <select id="count" resultType="java.lang.Integer">
+    <select id="count" resultType="java.lang.Long">
         select Count(*)
         from record
         <include refid="selectCondition" />
@@ -98,37 +108,43 @@
     <sql id="selectCondition">
         <where>
              <if test="id != null">
-                and ID = #{id}
+                and record.ID = #{id}
             </if>
             <if test="userId != null">
-                and User_ID = #{userId}
+                and record.User_ID = #{userId}
             </if>
             <if test="dutyId != null">
-                and Duty_ID = #{dutyId}
+                and record.Duty_ID = #{dutyId}
             </if>
-            <if test="date != null">
-                and Date = #{date}
+            <if test="beginDate != null and beginDate != ''">
+                and record.Date <![CDATA[>=]]> #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and record.Date <![CDATA[<=]]> #{endDate}
+            </if>
+            <if test="date != null and date != ''">
+                and record.Date = #{date}
             </if>
             <if test="place != null and place != ''">
-                and Place = #{place}
+                and record.Place = #{place}
             </if>
             <if test="imgPath != null and imgPath != ''">
-                and Img_Path = #{imgPath}
+                and record.Img_Path = #{imgPath}
             </if>
             <if test="remark != null and remark != ''">
-                and Remark = #{remark}
+                and record.Remark = #{remark}
             </if>
             <if test="status != null">
-                and Status = #{status}
+                and record.Status = #{status}
             </if>
             <if test="note != null and note != ''">
-                and Note = #{note}
+                and record.Note = #{note}
             </if>
             <if test="tempA != null and tempA != ''">
-                and temp_a = #{tempA}
+                and record.temp_a = #{tempA}
             </if>
             <if test="tempB != null and tempB != ''">
-                and temp_b = #{tempB}
+                and record.temp_b = #{tempB}
             </if>
         </where>
     </sql>

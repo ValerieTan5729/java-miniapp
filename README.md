@@ -71,6 +71,8 @@
   })
   ```
 
+访问地址为`localhost:2005/mini/swagger-ui.html`(请自行修改)
+
 ## MyBatis配置
 
 本项目采用MyBatis框架和MySQL来实现持久化层数据的维护。

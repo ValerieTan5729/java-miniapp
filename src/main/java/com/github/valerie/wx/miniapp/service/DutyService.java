@@ -52,7 +52,7 @@ public interface DutyService {
      * @param param 查询条件
      * @return int
      */
-    Integer count(Map<String, Object> param);
+    Long count(Map<String, Object> param);
 
     /**
      * 新增数据

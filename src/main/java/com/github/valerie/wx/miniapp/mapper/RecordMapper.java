@@ -53,9 +53,9 @@ public interface RecordMapper {
      * 获取满足条件的条目数
      *
      * @param param 查询条件
-     * @return int
+     * @return long
      */
-    Integer count(Map<String, Object> param);
+    Long count(Map<String, Object> param);
 
     /**
      * 新增数据

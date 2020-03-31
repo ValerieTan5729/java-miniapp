@@ -1,9 +1,12 @@
 package com.github.valerie.wx.miniapp.model;
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
@@ -37,6 +40,8 @@ public class Record {
     * 打卡日期
     */    
     @ApiModelProperty("打卡日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date date;
     
     /**
@@ -85,7 +90,13 @@ public class Record {
      * 用户名称
      */
     @ApiModelProperty("用户名称")
-    private Long userName;
+    private String userName;
+
+    /**
+     * 值班表名称
+     */
+    @ApiModelProperty("值班表名称")
+    private String dutyName;
     
 
 

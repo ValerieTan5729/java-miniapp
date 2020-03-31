@@ -74,7 +74,7 @@ public class DutyServiceImpl implements DutyService {
      * @return int
      */
     @Override
-    public Integer count(Map<String, Object> param) {
+    public Long count(Map<String, Object> param) {
         return this.dutyMapper.count(param);
     }
 
@@ -86,7 +86,6 @@ public class DutyServiceImpl implements DutyService {
      */
     @Override
     public int add(Duty duty) {
-                        
         return this.dutyMapper.add(duty);
     }
 
@@ -98,7 +97,6 @@ public class DutyServiceImpl implements DutyService {
      */
     @Override
     public int update(Duty duty) {
-                        
         return this.dutyMapper.update(duty);
     }
 

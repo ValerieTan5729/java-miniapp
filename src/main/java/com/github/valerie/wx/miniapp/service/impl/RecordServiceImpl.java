@@ -71,10 +71,10 @@ public class RecordServiceImpl implements RecordService {
      * 获取满足条件的条目数
      *
      * @param param 查询条件
-     * @return int
+     * @return long
      */
     @Override
-    public Integer count(Map<String, Object> param) {
+    public Long count(Map<String, Object> param) {
         return this.recordMapper.count(param);
     }
 
@@ -86,7 +86,6 @@ public class RecordServiceImpl implements RecordService {
      */
     @Override
     public int add(Record record) {
-                        
         return this.recordMapper.add(record);
     }
 
@@ -98,7 +97,6 @@ public class RecordServiceImpl implements RecordService {
      */
     @Override
     public int update(Record record) {
-                        
         return this.recordMapper.update(record);
     }
 

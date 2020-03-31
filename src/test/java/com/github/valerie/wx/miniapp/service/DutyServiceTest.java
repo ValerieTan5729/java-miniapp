@@ -59,7 +59,7 @@ public class DutyServiceTest {
         param.put("page", 0);
         param.put("limit", 10);
         param.put("beginDate", "2020-02-01");
-        int res = this.service.count(param);
+        long res = this.service.count(param);
         log.info("res:{}", res);
     }
 

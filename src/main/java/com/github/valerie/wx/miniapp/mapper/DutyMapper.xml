@@ -81,7 +81,7 @@
         </if>
     </select>
 
-    <select id="count" resultType="java.lang.Integer">
+    <select id="count" resultType="java.lang.Long">
         select COUNT(*)
         from duty
         <include refid="selectCondition" />
