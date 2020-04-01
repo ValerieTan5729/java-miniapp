@@ -1,13 +1,21 @@
 package com.github.valerie.wx.miniapp.controller;
 
-import com.github.valerie.wx.miniapp.model.Duty;
 import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.service.DictoryService;
 import com.github.valerie.wx.miniapp.service.UserService;
+import com.github.valerie.wx.miniapp.utils.FileUploadUtils;
+import com.github.valerie.wx.miniapp.utils.PlaceUtils;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
 import com.github.valerie.wx.miniapp.config.wxLogin.WxAuthenticationToken;
+import com.github.valerie.wx.miniapp.utils.response.RespBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -26,6 +34,9 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 微信小程序用户接口
@@ -42,6 +53,9 @@ public class WxMaUserController {
 
     @Autowired
     protected AuthenticationManager authenticationManager;
+
+    @Autowired
+    private DictoryService dictoryService;
 
     /**
      * 登陆接口
@@ -168,13 +182,44 @@ public class WxMaUserController {
      * 如果需要上传带图片的表单信息, 需要RequestParam接受数据
      * */
     @PostMapping("/scan")
-    public String scan(@PathVariable String appid,
-                       @RequestParam("img") MultipartFile img) {
+    public RespBean scan(@PathVariable String appid,
+                         @RequestParam("img") MultipartFile img) {
+        if (img.isEmpty()) return RespBean.error("服务器没有接收到图片");
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
-        return ScanQrCodeUtils.scan(wxService, img);
+        // 获取上传的文件的路径
+        File file = FileUploadUtils.upload(img);
+        log.info("file path is {}", file.getPath());
+        // 解析二维码信息
+        String message = ScanQrCodeUtils.scan(wxService, file);
+        log.info("message is {}", message);
+        int index = PlaceUtils.findPlace(message);
+        log.info("place is {}", index);
+        if (index == -1) {
+            if (file.delete()) {
+                // 如果没有对应的打卡地点, 删除上传到服务器的文件
+                return RespBean.error("上传的二维码无法解析成功");
+            } else {
+                // 如果删除文件失败, 返回错误信息
+                return RespBean.error("删除二维码文件时候出现问题, 请联系系统管理员");
+            }
+        }
+        Map<String, Object> param = new HashMap<>();
+        param.put("place", this.dictoryService.selectById((long) (index + +3)).getName());
+        param.put("imgUrl", file.getPath());
+        return RespBean.ok("上传成功", param);
+        // return ScanQrCodeUtils.scan(wxService, img);
     }
 
-    public String getCurrentUserName(){
+    // 图片在线预览
+    @GetMapping(value = "/img", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity preview(@RequestParam("path") String path) throws FileNotFoundException {
+        InputStream input = new FileInputStream(new File(path));
+        InputStreamResource resource = new InputStreamResource(input);
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    private String getCurrentUserName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("auth:{}", authentication);
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {

@@ -53,15 +53,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 忽视微信小程序的API接口
-        // web.ignoring().antMatchers("/**/**", "/wx/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        web.ignoring().antMatchers( "/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // 忽略的url无法获取当前用户的登录信息
         // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        // web.ignoring().antMatchers("/login","/wx/user/wxeb195511809cd1ef/login","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        web.ignoring().antMatchers("/*/**");
+        // web.ignoring().antMatchers("/*/**");
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        // http.authorizeRequests().antMatchers("/wx/user/**").anonymous();
         http.apply(wxAuthenticationSecurityConfig);
         // 开启登录配置
         http.authorizeRequests()
@@ -84,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .passwordParameter("password")
             // 登录时候访问的url
             .loginProcessingUrl("/login")
-            // .loginPage("/login")
+            // .loginPage("/doLogin")
             // permitAll 表示登录相关的页面/接口不要被拦截
             .permitAll()
             // 定义登录页面，未登录时，访问一个需要登录才能访问的接口，会自动跳转到该页面

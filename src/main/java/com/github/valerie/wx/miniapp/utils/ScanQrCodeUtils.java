@@ -27,4 +27,17 @@ public class ScanQrCodeUtils {
         }
         return null;
     }
+
+    public static String scan(WxMaService wxService, File img) {
+        try {
+            WxScanCodeResult res = wxService.execute(ScanQrcodeRequestExecutor.create(wxService.getRequestHttp()), IMG_SCAN_URL, img);
+            log.info("data ： " + res.getCode_results().get(0).getData());
+            // 返回二维码信息
+            return res.getCode_results().get(0).getData();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
