@@ -2,8 +2,9 @@ package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.DictoryService;
+import com.github.valerie.wx.miniapp.service.RecordService;
 import com.github.valerie.wx.miniapp.service.UserService;
-import com.github.valerie.wx.miniapp.utils.FileUploadUtils;
+import com.github.valerie.wx.miniapp.utils.FileUtils;
 import com.github.valerie.wx.miniapp.utils.PlaceUtils;
 import com.github.valerie.wx.miniapp.utils.ScanQrCodeUtils;
 import com.github.valerie.wx.miniapp.config.wxLogin.WxAuthenticationToken;
@@ -56,6 +57,9 @@ public class WxMaUserController {
 
     @Autowired
     private DictoryService dictoryService;
+
+    @Autowired
+    private RecordService recordService;
 
     /**
      * 登陆接口
@@ -186,8 +190,9 @@ public class WxMaUserController {
                          @RequestParam("img") MultipartFile img) {
         if (img.isEmpty()) return RespBean.error("服务器没有接收到图片");
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
+        Map<String, Object> res = FileUtils.upload(img);
         // 获取上传的文件的路径
-        File file = FileUploadUtils.upload(img);
+        File file = (File) res.get("file");
         log.info("file path is {}", file.getPath());
         // 解析二维码信息
         String message = ScanQrCodeUtils.scan(wxService, file);
@@ -205,14 +210,15 @@ public class WxMaUserController {
         }
         Map<String, Object> param = new HashMap<>();
         param.put("place", this.dictoryService.selectById((long) (index + +3)).getName());
-        param.put("imgUrl", file.getPath());
+        param.put("imgUrl", res.get("path"));
         return RespBean.ok("上传成功", param);
         // return ScanQrCodeUtils.scan(wxService, img);
     }
 
     // 图片在线预览
-    @GetMapping(value = "/img", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity preview(@RequestParam("path") String path) throws FileNotFoundException {
+    @GetMapping(value = "/img/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity preview(@PathVariable("id") Long id) throws FileNotFoundException {
+        String path = FileUtils.getUploadDir() + this.recordService.selectById(id).getImgPath();
         InputStream input = new FileInputStream(new File(path));
         InputStreamResource resource = new InputStreamResource(input);
         HttpHeaders headers = new HttpHeaders();

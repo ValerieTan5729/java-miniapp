@@ -1,7 +1,6 @@
 package com.github.valerie.wx.miniapp.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -12,14 +11,16 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-public class FileUploadUtils {
+public class FileUtils {
     public static final String UPLOAD_DIR = "D://upload//";
 
     // 上传文件
-    public static File upload(MultipartFile file) {
+    public static Map<String, Object> upload(MultipartFile file) {
         String filePath = "";
         File dest = null;
         try {
@@ -31,8 +32,7 @@ public class FileUploadUtils {
                 String pathName = getUploadDir() + pathDir + storeName;
                 dest = new File(pathName);
                 System.out.println("pathName : " + pathName);
-                // file.transferTo(dest);
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(pathName));
+                file.transferTo(dest);
                 filePath = pathDir + storeName;
             } else {
                 log.info("上传的文件为空");
@@ -42,7 +42,10 @@ public class FileUploadUtils {
             // throw e;
             // logger.error(e.getClass(), e);
         }
-        return dest;
+        Map<String, Object> param = new HashMap<>();
+        param.put("file", dest);
+        param.put("path", filePath);
+        return param;
     }
 
     // 下载本地文件
