@@ -165,11 +165,6 @@
             <artifactId>commons-io</artifactId>
             <version>RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>RELEASE</version>
-        </dependency>
     </dependencies>
 
     <build>
