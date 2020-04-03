@@ -26,9 +26,19 @@ public interface MenuService {
     List<Menu> getAllMenusWithRole();
 
     /**
+     * 获取当前用户的菜单
+     * */
+    List<Menu> getMenuByUser();
+
+    /**
      * 根据用户ID获取相应的菜单
      * */
-    Menu getMenuByUserID(Long userId);
+    List<Menu> getMenuByUserID(Long userId);
+
+    /**
+     * 根据角色ID获取菜单ID
+     * */
+    List<Long> getMenuIdByRoleId(Long roleId);
 
     /**
      * 通过ID查询单条数据

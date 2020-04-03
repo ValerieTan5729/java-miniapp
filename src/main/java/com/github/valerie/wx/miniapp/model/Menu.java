@@ -40,6 +40,12 @@ public class Menu {
     */    
     @ApiModelProperty("前端页面路径")
     private String path;
+
+    /**
+     * 前端组件mi名称
+   * */
+    @ApiModelProperty("前端组件名称")
+    private String component;
     
     /**
     * 是否需要登录之后才能访问(0需要/1不需要)

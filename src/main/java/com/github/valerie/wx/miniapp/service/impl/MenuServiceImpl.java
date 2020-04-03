@@ -3,7 +3,9 @@ package com.github.valerie.wx.miniapp.service.impl;
 import com.github.valerie.wx.miniapp.mapper.MenuRoleMapper;
 import com.github.valerie.wx.miniapp.model.Menu;
 import com.github.valerie.wx.miniapp.mapper.MenuMapper;
+import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.MenuService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +47,27 @@ public class MenuServiceImpl implements MenuService {
     }
 
     /**
+     * 获取当前用户的菜单
+     * */
+    @Override
+    public List<Menu> getMenuByUser() {
+        return this.menuMapper.getMenuByUserID(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+    }
+
+    /**
      * 根据用户ID获取相应的菜单
      * */
     @Override
-    public Menu getMenuByUserID(Long userId) {
+    public List<Menu> getMenuByUserID(Long userId) {
         return this.menuMapper.getMenuByUserID(userId);
+    }
+
+    /**
+     * 根据角色ID获取菜单ID
+     * */
+    @Override
+    public List<Long> getMenuIdByRoleId(Long roleId) {
+        return this.roleMapper.getMenuIdByRoleId(roleId);
     }
 
     /**

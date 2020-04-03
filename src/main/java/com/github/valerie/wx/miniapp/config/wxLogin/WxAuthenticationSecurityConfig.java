@@ -21,9 +21,9 @@ public class WxAuthenticationSecurityConfig extends SecurityConfigurerAdapter<De
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        WxAuthenticationFilter wxCodeAuthenticationFilter = new WxAuthenticationFilter();
-        wxCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        wxCodeAuthenticationFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
+        WxAuthenticationFilter wxAuthenticationFilter = new WxAuthenticationFilter();
+        wxAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
+        wxAuthenticationFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
             // 登录成功处理器
             log.info("登录成功");
             response.setContentType("application/json;charset=utf-8");
@@ -33,7 +33,7 @@ public class WxAuthenticationSecurityConfig extends SecurityConfigurerAdapter<De
             out.flush();
             out.close();
         });
-        wxCodeAuthenticationFilter.setAuthenticationFailureHandler(((request, response, exception) -> {
+        wxAuthenticationFilter.setAuthenticationFailureHandler(((request, response, exception) -> {
             // 登录失败处理器
             response.setContentType("application/json;charset=utf-8");
             PrintWriter out = response.getWriter();
@@ -43,10 +43,10 @@ public class WxAuthenticationSecurityConfig extends SecurityConfigurerAdapter<De
             out.close();
         }));
 
-        WxAuthenticationProvider smsCodeAuthenticationProvider = new WxAuthenticationProvider();
-        smsCodeAuthenticationProvider.setUserDetailsService(userService);
+        WxAuthenticationProvider wxAuthenticationProvider = new WxAuthenticationProvider();
+        wxAuthenticationProvider.setUserDetailsService(userService);
 
-        http.authenticationProvider(smsCodeAuthenticationProvider)
-            .addFilterAfter(wxCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(wxAuthenticationProvider)
+            .addFilterAfter(wxAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

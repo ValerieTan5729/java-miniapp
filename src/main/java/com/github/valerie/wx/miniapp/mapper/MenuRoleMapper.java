@@ -19,6 +19,8 @@ public interface MenuRoleMapper {
 
     int addMenuRole(@Param("roleId") Long roleId, @Param("menuList") List<Long> menuList);
 
+    List<Long> getMenuIdByRoleId(@Param("roleId") Long roleId);
+
     /**
      * 通过ID查询单条数据
      *

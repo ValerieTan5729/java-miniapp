@@ -31,7 +31,7 @@ public interface MenuMapper {
     /**
      * 根据用户ID获取相应的菜单
      * */
-    Menu getMenuByUserID(Long userId);
+    List<Menu> getMenuByUserID(Long userId);
 
     /**
      * 通过ID查询单条数据

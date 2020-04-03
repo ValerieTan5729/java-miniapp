@@ -47,9 +47,20 @@ public class MenuController {
      * 获取所有菜单
      * */
     @ApiOperation("获取所有菜单")
-    @GetMapping("/")
+    @GetMapping("/all")
     public RespBean select() {
-        return RespBean.ok("获取成功", this.service.getAllMenusByParentId((long) 0));
+        return RespBean.ok(this.service.getAllMenusByParentId((long) 0));
+        // return RespBean.ok("获取成功", this.service.getAllMenusByParentId((long) 0));
+    }
+
+    /**
+     * 通过用户获取相应的菜单列表
+     * */
+    @ApiOperation("通过用户获取相应的菜单列表")
+    @GetMapping("/")
+    public RespBean selectByUser() {
+        return RespBean.ok(this.service.getMenuByUser());
+        // return RespBean.ok("菜单获取成功", this.service.getMenuByUser());
     }
 
     /**
@@ -59,6 +70,16 @@ public class MenuController {
     @GetMapping("/user/{id}")
     public RespBean selectByUserId(@PathVariable Long id) {
         return RespBean.ok("获取成功", this.service.getMenuByUserID(id));
+    }
+
+    /**
+     * 根据角色ID获取菜单ID
+     * */
+    @ApiOperation("根据角色ID获取菜单ID")
+    @GetMapping("/role/{id}")
+    public RespBean selectByRoleId(@PathVariable Long id) {
+        return RespBean.ok(this.service.getMenuIdByRoleId(id));
+        // return RespBean.ok("获取成功", this.service.getMenuIdByRoleId(id));
     }
 
     /**

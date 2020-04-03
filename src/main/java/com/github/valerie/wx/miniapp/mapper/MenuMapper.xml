@@ -7,6 +7,7 @@
         <result property="name" column="Name" jdbcType="VARCHAR"/>
         <result property="url" column="Url" jdbcType="VARCHAR"/>
         <result property="path" column="Path" jdbcType="VARCHAR"/>
+        <result property="component" column="Component" jdbcType="VARCHAR"/>
         <result property="auth" column="Auth" jdbcType="INTEGER"/>
         <result property="parentId" column="Parent_Id" jdbcType="BIGINT"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
@@ -29,7 +30,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, Name, Url, Path, Auth, Parent_Id, Status, Note, Creat_Time, Update_Time, temp_a, temp_b
+        ID, Name, Url, Path, Component, Auth, Parent_Id, Status, Note, Creat_Time, Update_Time, temp_a, temp_b
     </sql>
 
     <select id="getAllMenusByParentId" resultMap="MenuWithChildren">
@@ -48,7 +49,7 @@
         select DISTINCT menu.*
         from menu left join menu_role on menu.ID = menu_role.Menu_ID
                   left join user_role on user_role.Role_ID = menu_role.Role_ID
-        where user_role.User_ID = #{userId} and menu.Parent_Id = 0 and menu.Status = 0
+        where user_role.User_ID = #{userId} and menu.Parent_Id = 1 and menu.Status = 0
     </select>
 
     <!--查询单个-->
@@ -84,6 +85,9 @@
             </if>
             <if test="path != null and path != ''">
                 and Path = #{path}
+            </if>
+            <if test="component != null and component != ''">
+                and Component = #{component}
             </if>
             <if test="auth != null">
                 and Auth = #{auth}
@@ -137,6 +141,9 @@
             <if test="path != null and path != ''">
                 and Path = #{path}
             </if>
+            <if test="component != null and component != ''">
+                and Component = #{component}
+            </if>
             <if test="auth != null">
                 and Auth = #{auth}
             </if>
@@ -174,6 +181,9 @@
             <if test="path != null">
                 Path,
             </if>
+            <if test="component != null">
+                Component,
+            </if>
             <if test="auth != null">
                 Auth,
             </if>
@@ -206,6 +216,9 @@
             </if>
             <if test="path != null">
                 #{path},
+            </if>
+            <if test="component != null">
+                #{component},
             </if>
             <if test="auth != null">
                 #{auth},
@@ -240,6 +253,9 @@
             </if>
             <if test="path != null and path != ''">
                 Path = #{path},
+            </if>
+            <if test="component != null and component != ''">
+                Component = #{component}
             </if>
             <if test="auth != null">
                 Auth = #{auth},

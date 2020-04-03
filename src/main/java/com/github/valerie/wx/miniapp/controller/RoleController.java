@@ -60,7 +60,8 @@ public class RoleController {
         param.put("name", name);
         List<Role> res = this.service.select(param);
         Integer total = this.service.count(param);
-        return RespBean.ok("获取成功", new RespPageBean(total, res));
+        return RespBean.ok(new RespPageBean(total, res));
+        // return RespBean.ok("获取成功", new RespPageBean(total, res));
     }
 
     /**

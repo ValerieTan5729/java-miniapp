@@ -217,16 +217,18 @@ public class WxMaUserController {
 
     // 图片在线预览
     @GetMapping(value = "/img/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity preview(@PathVariable("id") Long id) throws FileNotFoundException {
+    public Object preview(@PathVariable("id") Long id) throws FileNotFoundException {
         String path = this.recordService.selectById(id).getImgPath();
+        HttpHeaders headers = new HttpHeaders();
         log.info("path:{}", path);
         if (path != null) {
             InputStream input = new FileInputStream(new File(FileUtils.getUploadDir() + path));
             InputStreamResource resource = new InputStreamResource(input);
-            HttpHeaders headers = new HttpHeaders();
+            // HttpHeaders headers = new HttpHeaders();
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        headers.set("message", "no file found");
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     private String getCurrentUserName(){

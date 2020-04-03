@@ -1,6 +1,7 @@
 package com.github.valerie.wx.miniapp.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.valerie.wx.miniapp.config.webLogin.LoginFilter;
 import com.github.valerie.wx.miniapp.model.User;
 import com.github.valerie.wx.miniapp.service.UserService;
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.PrintWriter;
 
@@ -44,68 +46,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        // 忽视微信小程序的API接口
-        web.ignoring().antMatchers( "/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        // 忽略的url无法获取当前用户的登录信息
-        // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
-        // web.ignoring().antMatchers("/*/**");
-    }
-
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        // http.authorizeRequests().antMatchers("/wx/user/**").anonymous();
-        http.apply(wxAuthenticationSecurityConfig);
-        // 开启登录配置
-        http.authorizeRequests()
-            // 具备admin这个角色才能访问/hello这个接口
-            // .antMatchers("/hello").hasRole("admin")
-            // 接口需要登录之后才能访问
-            // .anyRequest().authenticated()
-            .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                @Override
-                public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                    object.setAccessDecisionManager(customUrlDecisionManager);
-                    object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
-                    return object;
-                }
-            })
-            //and 方法表示结束当前标签，上下文回到HttpSecurity，开启新一轮的配置
-            .and()
-            .formLogin()
-            .usernameParameter("phone")
-            .passwordParameter("password")
-            // 登录时候访问的url
-            .loginProcessingUrl("/login")
-            // .loginPage("/doLogin")
-            // permitAll 表示登录相关的页面/接口不要被拦截
-            .permitAll()
-            // 定义登录页面，未登录时，访问一个需要登录才能访问的接口，会自动跳转到该页面
-            // .loginPage("/login")
-            // 登录处理接口
-            // .loginProcessingUrl("/doLogin")
-            // .defaultSuccessUrl("/valerie/hello") // 登录成功后跳转到指定的API接口
-            // 登录处理接口
-            .successHandler((request, response, authentication) -> {
-                // 登录成功处理器
-                response.setContentType("application/json;charset=utf-8");
-                PrintWriter out = response.getWriter();
-                User user = (User) authentication.getPrincipal();
-                user.setPassword(null);
-                String s = new ObjectMapper().writeValueAsString(user);
-                out.write("登录成功！");
-                // out.write(s);
-                out.flush();
-                out.close();
-            })
-            .failureHandler((request, response, exception) -> {
+    @Bean
+    LoginFilter loginFilter() throws Exception {
+        LoginFilter loginFilter = new LoginFilter();
+        loginFilter.setUsernameParameter("phone");
+        loginFilter.setPasswordParameter("password");
+        // 登录时候访问的url
+        loginFilter.setFilterProcessesUrl("/login");
+        loginFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
+            // 登录成功处理器
+            response.setContentType("application/json;charset=utf-8");
+            PrintWriter out = response.getWriter();
+            User user = (User) authentication.getPrincipal();
+            user.setPassword(null);
+            RespBean res = RespBean.ok("登录成功", user);
+            String s = new ObjectMapper().writeValueAsString(res);
+            // out.write("登录成功！");
+            out.write(s);
+            out.flush();
+            out.close();
+        });
+        loginFilter.setAuthenticationFailureHandler(
+            (request, response, exception) -> {
                 // 登录失败处理器
                 response.setContentType("application/json;charset=utf-8");
                 PrintWriter out = response.getWriter();
@@ -125,7 +87,47 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 out.write(resp);
                 out.flush();
                 out.close();
+            }
+        );
+        loginFilter.setAuthenticationManager(authenticationManager());
+        return loginFilter;
+    }
+
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // 忽视微信小程序的API接口
+        web.ignoring().antMatchers( "/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // 忽略的url无法获取当前用户的登录信息
+        // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // web.ignoring().antMatchers("/*/**");
+    }
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        // http.authorizeRequests().antMatchers("/wx/user/**").anonymous();
+        http.apply(wxAuthenticationSecurityConfig);
+        http.addFilterAfter(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+        // 开启登录配置
+        http.authorizeRequests()
+            // 具备admin这个角色才能访问/hello这个接口
+            // .antMatchers("/hello").hasRole("admin")
+            // 接口需要登录之后才能访问
+            // .anyRequest().authenticated()
+            .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                @Override
+                public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                    object.setAccessDecisionManager(customUrlDecisionManager);
+                    object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                    return object;
+                }
             })
+            //and 方法表示结束当前标签，上下文回到HttpSecurity，开启新一轮的配置
             .and()
             .logout()
             .logoutUrl("/logout")

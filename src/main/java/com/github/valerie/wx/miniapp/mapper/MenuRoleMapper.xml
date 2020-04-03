@@ -12,6 +12,10 @@
         ID, Menu_ID, Role_ID    
     </sql>
 
+    <select id="getMenuIdByRoleId" resultType="java.lang.Long">
+        select Menu_ID from menu_role where Role_ID = #{roleId}
+    </select>
+
     <delete id="deleteByRoleId">
         delete from menu_role where Role_ID = #{roleId}
     </delete>
