@@ -39,7 +39,7 @@ public class MenuServiceTest {
 
     @Test
     public void getMenuByUserID() {
-        Menu res = this.service.getMenuByUserID((long) 1);
+        List<Menu> res = this.service.getMenuByUserID((long) 1);
         log.info("res:{}", res);
     }
 
