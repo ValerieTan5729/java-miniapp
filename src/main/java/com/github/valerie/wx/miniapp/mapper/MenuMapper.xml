@@ -24,6 +24,15 @@
         </collection>
     </resultMap>
 
+    <resultMap id="MenuMap2" type="com.github.valerie.wx.miniapp.model.Menu" extends="MenuMap">
+        <collection property="children" ofType="com.github.valerie.wx.miniapp.model.Menu">
+            <id column="ID2" property="id" jdbcType="INTEGER" />
+            <result column="Path2" property="path" jdbcType="VARCHAR" />
+            <result column="Component2" property="component" jdbcType="VARCHAR" />
+            <result column="Name2" property="name" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
     <resultMap id="MenuWithChildren" type="com.github.valerie.wx.miniapp.model.Menu" extends="MenuMap">
         <collection property="children" ofType="com.github.valerie.wx.miniapp.model.Menu"
                     select="com.github.valerie.wx.miniapp.mapper.MenuMapper.getAllMenusByParentId" column="id"/>
@@ -45,11 +54,13 @@
         order by menu.ID
     </select>
     
-    <select id="getMenuByUserID" resultMap="MenuWithChildren">
-        select DISTINCT menu.*
-        from menu left join menu_role on menu.ID = menu_role.Menu_ID
-                  left join user_role on user_role.Role_ID = menu_role.Role_ID
-        where user_role.User_ID = #{userId} and menu.Parent_Id = 1 and menu.Status = 0
+    <select id="getMenuByUserID" resultMap="MenuMap2">
+        SELECT DISTINCT menu1.ID, menu1.Name, menu1.Path, menu1.Component, menu2.ID as ID2, menu2.Name as Name2, menu2.path as Path2, menu2.Component as Component2
+        FROM menu menu1
+            LEFT JOIN menu menu2 on menu2.Parent_Id = menu1.ID
+            LEFT JOIN menu_role mr on menu2.ID = mr.Menu_ID
+            LEFT JOIN user_role ur on ur.Role_ID = mr.Role_ID
+        WHERE menu1.Parent_Id = 1 and ur.User_ID = #{userId}
     </select>
 
     <!--查询单个-->

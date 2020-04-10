@@ -13,4 +13,14 @@ public class LoginController {
     public RespBean login() {
         return RespBean.error("尚未登录，请登录!");
     }
+
+    @GetMapping("/wx/hello")
+    public RespBean helloWx() {
+        return RespBean.ok("你好，微信小程序的API");
+    }
+
+    @GetMapping("/wx/kjw/hello")
+    public RespBean helloKJW() {
+        return RespBean.ok("你好，微信小程序的API");
+    }
 }

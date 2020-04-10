@@ -37,14 +37,18 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
         for (Menu menu : menus) {
             log.info("menu url:{}, requestUrl:{}, match result:{}", menu.getUrl(), requestUrl, antPathMatcher.match(menu.getUrl(), requestUrl));
             if (antPathMatcher.match(menu.getUrl(), requestUrl)) {
-                List<Role> roles = menu.getRoles();
-                log.info("role:{}", roles);
-                String[] str = new String[roles.size()];
-                for (int i = 0; i < roles.size(); i++) {
-                    str[i] = roles.get(i).getName();
+                if (menu.getAuth() == 0) {
+                    List<Role> roles = menu.getRoles();
+                    log.info("role:{}", roles);
+                    String[] str = new String[roles.size()];
+                    for (int i = 0; i < roles.size(); i++) {
+                        str[i] = roles.get(i).getName();
+                    }
+                    log.info("str:{}", str);
+                    return SecurityConfig.createList(str);
+                } else {
+                    return SecurityConfig.createList("ROLE_ANONYMOUS");
                 }
-                log.info("str:{}", str);
-                return SecurityConfig.createList(str);
             }
         }
         return SecurityConfig.createList("ROLE_LOGIN");

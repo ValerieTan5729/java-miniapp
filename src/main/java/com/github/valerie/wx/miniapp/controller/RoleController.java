@@ -123,7 +123,8 @@ public class RoleController {
      * */
     @ApiOperation("给角色分配相应的菜单列表")
     @PutMapping("/menu")
-    public RespBean updateRoleMenu(@RequestParam("roleId") Long roleId, @RequestParam("menuList") List<Long> menuList) {
+    public RespBean updateRoleMenu(@RequestParam("roleId") Long roleId,
+                                   @RequestParam(value = "menuList", defaultValue = "") List<Long> menuList) {
         if (this.menuService.updateMenuRole(roleId, menuList)) {
             return RespBean.ok("分配成功");
         }
