@@ -56,7 +56,4 @@ public class Role {
     */    
     @ApiModelProperty("备用字段2")
     private String tempB;
-    
-
-
 }

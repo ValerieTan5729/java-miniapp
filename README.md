@@ -7,6 +7,8 @@
     - [swagger2配置](#swagger2配置)
     - [MyBatis配置](#mybatis配置)
     - [Spring Security配置](#spring-security配置)
+    - [微信小程序第三方SDK配置](#微信小程序第三方SDK配置)
+    - [Docker项目部署](Docker项目部署)
 
 
 ## 项目结构
@@ -165,3 +167,104 @@ wx:
 项目加载之后调用`final WxMaService wxService = WxMaConfiguration.getMaService(appid);`，
 使用`wxService`相应的方法来实现与微信服务端的交互。
 
+## Docker项目部署
+
+#### 1. 服务器docker设置
+
+1. Ubuntu安装Docker
+
+    [参考文档](https://www.jianshu.com/p/80e3fd18a17e)
+    
+2. docker开启开启远程访问
+
+    - 修改docker宿主机文件的ExecStart配置
+    
+        `vim /lib/systemd/system/docker.service`
+        
+        `ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:[port] -H unix:///var/run/docker.sock`
+        
+        [port]为外界访问服务器docker服务的端口号(自行定义)
+    
+    - 通知docker服务做出修改
+    
+        `systemctl deamon-reload`
+    
+    - 重启docker服务
+    
+        `sudo service docker restart`
+    
+    - 测试docker api
+    
+        `curl http://127.0.0.1:[port]/wersion` or `curl http://[ip]:[port]/wersion`
+
+#### 2. docker部署文档(/src/main/docker/Dockerfile)
+
+```dockerfile
+# 指定java8为基础镜像(必须是第一条指令)
+FROM java:8
+# 挂载目录
+VOLUME /tmp
+# 把文件复制到镜像中
+ADD java-miniapp-1.0.0-SNAPSHOT.jar app.jar
+# 启动时的默认命令
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+```
+
+#### 3.idea Docker总体配置
+
+在idea的File->Settings->Build,Execution,Deployment->Docker中添加服务器的docker, 
+api url为`tcp://[ip]:[port]`
+
+#### 4. pom配置
+
+主要是将打包生成jar包复制到docker的目录下。
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+            <dockerDirectory>src/main/docker</dockerDirectory>
+            <resources>
+                <resource>
+                    <targetPath>/</targetPath>
+                    <directory>${project.build.directory}</directory>
+                    <include>${project.build.finalName}.jar</include>
+                </resource>
+            </resources>
+        </configuration>
+    </plugin>
+    <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <!--绑定mvn package命令，当执行package这个maven命令打包项目的同时
+            会把target目录下的jar包给copy到docker目录去-->
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <configuration>
+                    <target>
+                        <copy todir="src/main/docker" file="target/${project.build.finalName}.jar"/>
+                    </target>
+                </configuration>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+```
+
+#### 5. DockerFile配置
+
+Run/Debug Configuration->Add Docker/Dockerfile添加docker具体配置
+
+- Server->添加步骤3中的server
+- Dockerfile->添加步骤2中dockerfile的具体位置
+- Image tag->生成镜像的名称(spring:clock)
+- Run built image->勾选(这样可以一键启动docker镜像)
+- Container name->容器名称(clock)
+- Bind ports->[Host port]:[container port] (Host port为外界访问的端口, container port为项目端口)
+- 此外可以添加`Run Maven Goal : clean package`(这样在启动的时候可以获取最新的jar包)

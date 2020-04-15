@@ -102,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 忽视微信小程序的API接口
-        web.ignoring().antMatchers( "/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        web.ignoring().antMatchers( "/valerie/hello","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // 忽略的url无法获取当前用户的登录信息
         // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // web.ignoring().antMatchers("/*/**");
