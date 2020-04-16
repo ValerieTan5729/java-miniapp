@@ -36,6 +36,12 @@ public class Department {
     private Integer parentId;
 
     /**
+     * 是否拥有子部门
+     * */
+    @ApiModelProperty("是否拥有子部门")
+    private boolean isParent;
+
+    /**
      * 下级部门
      */
     @ApiModelProperty("下级部门")

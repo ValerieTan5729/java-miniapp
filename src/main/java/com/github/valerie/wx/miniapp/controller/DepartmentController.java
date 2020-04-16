@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Api("department接口")
 @RestController
-@RequestMapping("/dep")
+@RequestMapping("/basic/dep")
 @Slf4j
 public class DepartmentController {
 
@@ -58,7 +58,7 @@ public class DepartmentController {
     public RespBean add(@RequestBody Department department) {
         this.service.addDep(department);
         if (department.getResult() == 1) {
-            return RespBean.ok("新增成功");
+            return RespBean.ok("新增成功", department);
         }
         return RespBean.error("新增失败");
     }
@@ -89,7 +89,7 @@ public class DepartmentController {
         } else if (department.getResult() == -1) {
             return RespBean.error("部门下有员工，删除失败");
         } else if (department.getResult() == 1) {
-            return RespBean.error("删除成功");
+            return RespBean.ok("删除成功");
         }
         return RespBean.error("删除失败");
     }

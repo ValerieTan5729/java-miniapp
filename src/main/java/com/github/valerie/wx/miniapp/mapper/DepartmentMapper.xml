@@ -7,6 +7,7 @@
         <result property="name" column="Name" jdbcType="VARCHAR"/>
         <result property="parentId" column="Parent_ID" jdbcType="INTEGER"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
+        <result property="isParent" column="Is_Parent" jdbcType="INTEGER" />
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
         <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
     </resultMap>
@@ -17,7 +18,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, Name, Parent_ID, Status, temp_a, temp_b
+        ID, Name, Parent_ID, Status, Is_Parent, temp_a, temp_b
     </sql>
 
     <select id="getAllDepartmentsByParentId" resultMap="DepartmentWithChildren">
