@@ -52,6 +52,12 @@ public class Dictory {
      * */
     @ApiModelProperty("子节点")
     private List<Dictory> children;
+
+    /**
+     * 是否拥有子节点
+     * */
+    @ApiModelProperty("是否拥有子节点")
+    private boolean hasChildren;
     
     /**
     * 备用字段1

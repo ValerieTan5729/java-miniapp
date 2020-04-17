@@ -5,6 +5,7 @@ import com.github.valerie.wx.miniapp.service.DictoryService;
 import com.github.valerie.wx.miniapp.utils.NoteUtils;
 import com.github.valerie.wx.miniapp.utils.UserUtils;
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
+import com.github.valerie.wx.miniapp.utils.response.RespPageBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -12,11 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api("dictory")
 @RestController
-@RequestMapping("/dic")
+@RequestMapping("/basic/dic")
 @Slf4j
 public class DictoryController {
 

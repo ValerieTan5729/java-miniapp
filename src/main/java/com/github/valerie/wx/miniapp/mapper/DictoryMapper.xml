@@ -16,15 +16,20 @@
         <collection property="children" ofType="com.github.valerie.wx.miniapp.model.Dictory"
                     select="com.github.valerie.wx.miniapp.mapper.DictoryMapper.getAllDictoryByParentId" column="id"/>
     </resultMap>
+
+    <resultMap id="DictoryWithHasChildren" type="com.github.valerie.wx.miniapp.model.Dictory" extends="DictoryMap">
+        <result property="hasChildren" column="count"/>
+    </resultMap>
     
     <sql id="Base_Column_List" >
         ID, Name, Parent_ID, Status, Note, temp_a, temp_b
     </sql>
 
-    <select id="getAllDictoryByParentId" resultMap="DictoryWithChildren">
-        select
-        <include refid="Base_Column_List" />
-        from dictory where Parent_ID = #{pid} and Status = 0;
+    <select id="getAllDictoryByParentId" resultMap="DictoryWithHasChildren">
+        SELECT DISTINCT d1.*, Count(d2.ID) count
+        FROM dictory d1 LEFT JOIN dictory d2 on d2.Parent_ID = d1.ID and d2.Status = 0
+        WHERE d1.Parent_ID = #{pid} and d1.Status = 0
+        GROUP BY d1.ID
     </select>
 
     <!--查询单个-->
