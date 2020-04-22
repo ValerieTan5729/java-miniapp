@@ -38,7 +38,7 @@ public class DepartmentController {
     @ApiOperation("获取所有部门信息")
     @GetMapping("/")
     public RespBean getAllDepartments() {
-        return RespBean.ok("获取成功", this.service.getAllDepartments());
+        return RespBean.ok(this.service.getAllDepartments());
     }
 
     /**

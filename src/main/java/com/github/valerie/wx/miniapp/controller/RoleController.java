@@ -75,7 +75,7 @@ public class RoleController {
     public RespBean add(@RequestBody Role role) {
         role.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.service.add(role) == 1) {
-            return RespBean.error("新增角色成功");
+            return RespBean.ok("新增角色成功");
         }
         return RespBean.error("新增角色失败");
     }

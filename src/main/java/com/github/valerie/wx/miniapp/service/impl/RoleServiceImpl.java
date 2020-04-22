@@ -1,5 +1,6 @@
 package com.github.valerie.wx.miniapp.service.impl;
 
+import com.github.valerie.wx.miniapp.mapper.UserRoleMapper;
 import com.github.valerie.wx.miniapp.model.Role;
 import com.github.valerie.wx.miniapp.mapper.RoleMapper;
 import com.github.valerie.wx.miniapp.service.RoleService;
@@ -91,7 +92,9 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public int add(Role role) {
-                        
+        if (!role.getName().startsWith("ROLE_")) {
+            role.setName("ROLE_" + role.getName());
+        }
         return this.roleMapper.add(role);
     }
 

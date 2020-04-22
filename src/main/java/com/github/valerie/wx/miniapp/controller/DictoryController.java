@@ -44,8 +44,8 @@ public class DictoryController {
      * */
     @ApiOperation("获取所有信息")
     @GetMapping("/")
-    public RespBean select() {
-        return RespBean.ok("获取成功", this.service.getAllDictory());
+    public RespBean select(@RequestParam(value = "name", required = false) String name) {
+        return RespBean.ok(this.service.getAllDictory());
     }
 
     /**
@@ -54,7 +54,7 @@ public class DictoryController {
     @ApiOperation("通过父节点获取下属数字字典的信息")
     @GetMapping("/parent/{id}")
     public RespBean selectByParentId(@PathVariable Long id) {
-        return RespBean.ok("获取成功", this.service.getAllDictoryByParentId(id));
+        return RespBean.ok(this.service.getAllDictoryByParentId(id));
     }
 
 
@@ -62,11 +62,11 @@ public class DictoryController {
      * 新增数据
      * */
     @ApiOperation("新增数据")
-    @PostMapping("/add")
+    @PostMapping("/")
     public RespBean add(@RequestBody Dictory dictory) {
         dictory.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.service.add(dictory) == 1) {
-            return RespBean.ok("新增成功");
+            return RespBean.ok("新增成功", dictory);
         }
         return RespBean.error("新增失败");
     }
@@ -75,7 +75,7 @@ public class DictoryController {
      * 修改数据
      * */
     @ApiOperation("修改数据")
-    @PostMapping("/update")
+    @PutMapping("/")
     public RespBean update(@RequestBody Dictory dictory) {
         String note = dictory.getNote();
         if (note == null) {
