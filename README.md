@@ -8,7 +8,7 @@
     - [MyBatis配置](#mybatis配置)
     - [Spring Security配置](#spring-security配置)
     - [微信小程序第三方SDK配置](#微信小程序第三方SDK配置)
-    - [Docker项目部署](Docker项目部署)
+    - [Docker项目部署](#docker项目部署)
 
 
 ## 项目结构
