@@ -24,7 +24,6 @@ public class SwaggerConfig {
                                  .title("Spring Boot API 文档") // 文档标题
                                  .description("SpringBoot整合swagger") // 文档描述
                                  .version("0.1") // 版本号
-                                 .contact(new Contact("valerie", "www.baidu.com", "gzbn@mail")) // 联系方式
                                  .build());
     }
 }
