@@ -23,6 +23,11 @@ public interface DictoryService {
     List<Dictory> getAllDictoryByParentId(Long pid);
 
     /**
+     * 获取值班级别
+     * */
+    List<Dictory> getDutyLevel(Long id);
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键

@@ -9,6 +9,7 @@
         <result property="password" column="Password" jdbcType="VARCHAR"/>
         <result property="openId" column="Open_ID" jdbcType="VARCHAR"/>
         <result property="dutyLevelId" column="Duty_Level_ID" jdbcType="INTEGER"/>
+        <result property="dutyLevelName" column="Level_Name" jdbcType="VARCHAR"/>
         <result property="depId" column="Dep_ID" jdbcType="INTEGER"/>
         <result property="depName" column="Dep_Name" jdbcType="VARCHAR"/>
         <result property="remark" column="Remark" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        user.ID, user.Name, user.Phone, user.Password, user.Open_ID, user.Duty_Level_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
+        user.ID, user.Name, user.Phone, user.Open_ID, user.Duty_Level_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
     </sql>
 
     <select id="loadUserByPhone" resultMap="UserWithRoles">
@@ -116,8 +117,9 @@
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="UserMap">
         select
-        <include refid="Base_Column_List" />, department.Name as Dep_Name
+        <include refid="Base_Column_List" />, department.Name as Dep_Name, dictory.Name as Level_Name
         from user left join department on department.ID = user.Dep_ID
+                  left join dictory on dictory.ID = user.Duty_Level_ID
         <include refid="selectUserCondition" />
         <if test="page != null and limit != null">
             limit #{page}, #{limit}
@@ -164,6 +166,12 @@
             </if>
             <if test="tempB != null and tempB != ''">
                 and user.temp_b = #{tempB}
+            </if>
+            <if test="depName != null and depName != ''">
+                and department.Name like CONCAT('%', #{depName}, '%')
+            </if>
+            <if test="levelName != null and levelName != ''">
+                and dictory.Name like CONCAT('%', #{levelName}, '%')
             </if>
         </where>
     </sql>

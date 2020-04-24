@@ -39,6 +39,14 @@ public class DictoryServiceImpl implements DictoryService {
     }
 
     /**
+     * 获取值班级别
+     * */
+    @Override
+    public List<Dictory> getDutyLevel(Long id) {
+        return this.dictoryMapper.getDutyLevel(id);
+    }
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键

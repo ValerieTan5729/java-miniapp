@@ -14,7 +14,7 @@
 
     <resultMap id="DictoryWithChildren" type="com.github.valerie.wx.miniapp.model.Dictory" extends="DictoryMap">
         <collection property="children" ofType="com.github.valerie.wx.miniapp.model.Dictory"
-                    select="com.github.valerie.wx.miniapp.mapper.DictoryMapper.getAllDictoryByParentId" column="id"/>
+                    select="com.github.valerie.wx.miniapp.mapper.DictoryMapper.getDictoryByParentId" column="id"/>
     </resultMap>
 
     <resultMap id="DictoryWithHasChildren" type="com.github.valerie.wx.miniapp.model.Dictory" extends="DictoryMap">
@@ -30,6 +30,20 @@
         FROM dictory d1 LEFT JOIN dictory d2 on d2.Parent_ID = d1.ID and d2.Status = 0
         WHERE d1.Parent_ID = #{pid} and d1.Status = 0
         GROUP BY d1.ID
+    </select>
+
+    <select id="getDictoryByParentId" resultMap="DictoryWithChildren">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        where Parent_ID = #{id} and Status = 0
+    </select>
+
+    <select id="getDutyLevel" resultMap="DictoryWithChildren">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        where Parent_ID = #{id} and Status = 0
     </select>
 
     <!--查询单个-->

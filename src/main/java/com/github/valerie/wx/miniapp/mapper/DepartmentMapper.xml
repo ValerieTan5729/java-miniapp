@@ -22,7 +22,9 @@
     </sql>
 
     <select id="getAllDepartmentsByParentId" resultMap="DepartmentWithChildren">
-        select * from department where Parent_ID = #{pid} and Status = 0;
+        select
+        <include refid="Base_Column_List" />
+        from department where Parent_ID = #{pid} and Status = 0;
     </select>
 
     <!--查询单个-->

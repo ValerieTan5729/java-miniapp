@@ -20,9 +20,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * (User)表控制层
@@ -72,7 +71,8 @@ public class UserController {
                            @RequestParam(value = "limit", defaultValue = "10") int limit,
                            @RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "phone", required = false) String phone,
-                           @RequestParam(value = "depId", required = false) Integer depId) {
+                           @RequestParam(value = "depId", required = false) Integer depId,
+                           @RequestParam(value = "levelId", required = false) Integer levelId) {
         log.info("name : {}", name);
         Map<String, Object> param = new HashMap<>();
         param.put("page", (page - 1) * limit);
@@ -81,6 +81,7 @@ public class UserController {
         param.put("name", name);
         param.put("phone", phone);
         param.put("depId", depId);
+        param.put("dutyLevelId", levelId);
         List<User> res = this.userService.select(param);
         Long total = this.userService.count(param);
         return RespBean.ok("获取成功", new RespPageBean(total, res));
@@ -93,7 +94,7 @@ public class UserController {
      * @return 实例对象
      */
     @ApiOperation("新增用户数据")
-    @PostMapping("/add")
+    @PostMapping("/")
     public RespBean add(@RequestBody User user) {
         User exist = this.userService.findUserByPhone(user.getPhone());
         if (exist != null) {
@@ -102,6 +103,9 @@ public class UserController {
         if (user.getPassword() != null) {
             // 密码加盐处理
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        } else {
+            // 用户初始密码为123456
+            user.setPassword(new BCryptPasswordEncoder().encode("123456"));
         }
         user.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.userService.add(user) == 1) {
@@ -117,7 +121,7 @@ public class UserController {
      * @return 实例对象
      */
     @ApiOperation("修改用户基本信息")
-    @PostMapping("/update")
+    @PutMapping("/")
     public RespBean update(@RequestBody User user) {
         User exist = this.userService.findUserByPhone(user.getPhone());
         if (exist != null && !exist.getId().equals(user.getId())) {
@@ -162,7 +166,7 @@ public class UserController {
      * @param id 主键
      * @return 是否成功
      */
-    @ApiOperation("删除用户")
+    @ApiOperation("禁用用户")
     @DeleteMapping("/{id}")
     public RespBean deleteById(@PathVariable Long id) {
         User user = this.userService.selectById(id);
@@ -172,6 +176,35 @@ public class UserController {
             return RespBean.ok("删除用户成功");
         }
         return RespBean.error("删除用户失败");
+    }
+
+    /**
+     * 批量删除用户数据
+     * */
+    @ApiOperation("批量删除用户")
+    @DeleteMapping("/batch/{ids}")
+    public RespBean batchDelete(@PathVariable String ids) {
+        List<Long> list = Arrays.stream(ids.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+        List<User> userList = new ArrayList<>();
+        for (Long id : list) {
+            User user = this.userService.selectById(id);
+            user.setNote(user.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "删除"));
+            user.setStatus(1);
+            userList.add(user);
+        }
+        for (int index = 0; index < userList.size(); index++) {
+            if (this.userService.update(userList.get(index)) != 1) {
+                System.out.println("更新用户信息失败");
+                for (int i = 0; i < index; i++) {
+                    User user = userList.get(i);
+                    user.setStatus(0);
+                    user.setNote(user.getNote().replace('|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "删除"), ""));
+                    this.userService.update(user);
+                }
+                return RespBean.error("批量删除用户失败");
+            }
+        }
+        return RespBean.ok("批量删除用户成功");
     }
 
     /**

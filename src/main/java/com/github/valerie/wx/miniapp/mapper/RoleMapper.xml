@@ -18,7 +18,7 @@
 
     <select id="getUserRolesById" resultMap="RoleMap">
         select role.*
-        from role left join user_role on role.ID = user_role.Role_ID and user_role.User_ID = #{id} and role.Status = 0
+        from role join user_role on role.ID = user_role.Role_ID and user_role.User_ID = #{id} and role.Status = 0
     </select>
 
     <!--查询单个-->

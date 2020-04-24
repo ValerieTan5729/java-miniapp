@@ -57,6 +57,14 @@ public class DictoryController {
         return RespBean.ok(this.service.getAllDictoryByParentId(id));
     }
 
+    /**
+     * 获取值班级别
+     * */
+    @ApiOperation("获取值班级别")
+    @GetMapping("/duty")
+    public RespBean selectDuty() {
+        return RespBean.ok(this.service.getDutyLevel((long) 11));
+    }
 
     /**
      * 新增数据

@@ -3,6 +3,7 @@ package com.github.valerie.wx.miniapp.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

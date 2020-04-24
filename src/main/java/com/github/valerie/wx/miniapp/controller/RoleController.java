@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,20 @@ public class RoleController {
         Integer total = this.service.count(param);
         return RespBean.ok(new RespPageBean(total, res));
         // return RespBean.ok("获取成功", new RespPageBean(total, res));
+    }
+
+    /**
+     * 获取用户当前角色
+     * */
+    @ApiOperation("获取用户当前角色")
+    @GetMapping("/user/{id}")
+    public RespBean getUserRoleById(@PathVariable Long id) {
+        List<Role> roles = this.service.getUserRolesById(id);
+        List<Long> ids = new ArrayList<>();
+        for (Role role : roles) {
+            ids.add(role.getId());
+        }
+        return RespBean.ok(ids);
     }
 
     /**

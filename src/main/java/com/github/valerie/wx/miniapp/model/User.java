@@ -58,6 +58,12 @@ public class User implements UserDetails {
     */    
     @ApiModelProperty("用户值班级别ID")
     private Integer dutyLevelId;
+
+    /**
+     * 用户值班级别名称
+     * */
+    @ApiModelProperty("用户值班级别名称")
+    private String dutyLevelName;
     
     /**
     * 用户所在部门ID
