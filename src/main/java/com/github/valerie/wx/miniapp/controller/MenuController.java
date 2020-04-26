@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Api("menu接口")
 @RestController
-@RequestMapping("/menu")
+@RequestMapping({"/adv/menu", "/menu"})
 @Slf4j
 public class MenuController {
 
@@ -86,7 +86,7 @@ public class MenuController {
      * 新增菜单
      * */
     @ApiOperation("新增菜单")
-    @PostMapping("/add")
+    @PostMapping("/")
     public RespBean add(@RequestBody Menu menu) {
         menu.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.service.add(menu) == 1) {
@@ -99,7 +99,7 @@ public class MenuController {
      * 修改菜单
      * */
     @ApiOperation("修改菜单")
-    @PostMapping("/update")
+    @PutMapping("/")
     public RespBean update(@RequestBody Menu menu) {
         String note = menu.getNote();
         if (note == null) {

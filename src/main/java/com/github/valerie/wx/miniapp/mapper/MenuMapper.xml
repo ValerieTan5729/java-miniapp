@@ -10,6 +10,7 @@
         <result property="component" column="Component" jdbcType="VARCHAR"/>
         <result property="auth" column="Auth" jdbcType="INTEGER"/>
         <result property="parentId" column="Parent_Id" jdbcType="BIGINT"/>
+        <result property="parentName" column="Parent_Name" jdbcType="VARCHAR"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
@@ -43,7 +44,9 @@
     </sql>
 
     <select id="getAllMenusByParentId" resultMap="MenuWithChildren">
-        select * from menu where Parent_ID = #{pid} and Status = 0;
+        select menu.*, parent.name Parent_Name
+        from menu left join menu parent on parent.ID = menu.Parent_Id and parent.Status = 0
+        where menu.Parent_ID = #{pid} and menu.Status = 0
     </select>
     
     <select id="getAllMenusWithRole" resultMap="MenuWithRole">

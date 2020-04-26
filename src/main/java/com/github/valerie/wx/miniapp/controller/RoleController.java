@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Api("role接口")
 @RestController
-@RequestMapping("/role")
+@RequestMapping({"/adv/role", "/role"})
 @Slf4j
 public class RoleController {
 

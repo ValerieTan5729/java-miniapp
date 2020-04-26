@@ -48,16 +48,22 @@ public class Menu {
     private String component;
     
     /**
-    * 是否需要登录之后才能访问(0需要/1不需要)
+    * 是否需要登录之后才能访问(1需要/0不需要)
     */    
-    @ApiModelProperty("是否需要登录之后才能访问(0需要/1不需要)")
-    private Integer auth;
+    @ApiModelProperty("是否需要登录之后才能访问(1需要/0不需要)")
+    private Boolean auth;
     
     /**
     * 上一级菜单ID
     */    
     @ApiModelProperty("上一级菜单ID")
     private Long parentId;
+
+    /**
+     * 上一级菜单名称
+     * */
+    @ApiModelProperty("上一级菜单名称")
+    private String parentName;
 
     /**
      * 下一级菜单
