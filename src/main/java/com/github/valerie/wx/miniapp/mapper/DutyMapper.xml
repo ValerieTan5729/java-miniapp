@@ -76,6 +76,9 @@
         <include refid="Base_Column_List" />
         from duty
         <include refid="selectCondition" />
+        <if test="sort != null and order != null">
+            order by ${sort} ${order}
+        </if>
         <if test="page != null and limit != null">
             limit #{page}, #{limit}
         </if>

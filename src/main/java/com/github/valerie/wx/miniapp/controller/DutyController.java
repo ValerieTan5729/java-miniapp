@@ -52,7 +52,9 @@ public class DutyController {
                            @RequestParam(value = "limit", defaultValue = "10") int limit,
                            @RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "beginDate", required = false) String beginDate,
-                           @RequestParam(value = "endDate", required = false) String endDate) {
+                           @RequestParam(value = "endDate", required = false) String endDate,
+                           @RequestParam(value = "sortby", required = false) String sort,
+                           @RequestParam(value = "order", required = false) String order) {
         Map<String, Object> param = new HashMap<>();
         param.put("page", (page - 1) * limit);
         param.put("limit", limit);
@@ -60,16 +62,28 @@ public class DutyController {
         param.put("beginDate", beginDate);
         param.put("endDate", endDate);
         param.put("status", 0);
+        if (sort != null && order != null) {
+            if (sort.equals("beginDate")) {
+                param.put("sort", "Begin_Date");
+            } else if (sort.equals("endDate")) {
+                param.put("sort", "End_Date");
+            }
+            if (order.equals("ascending")) {
+                param.put("order", "asc");
+            } else if (order.equals("descending")) {
+                param.put("order", "desc");
+            }
+        }
         List<Duty> res = this.service.select(param);
         Long total = this.service.count(param);
-        return RespBean.ok("获取成功", new RespPageBean(total, res));
+        return RespBean.ok(new RespPageBean(total, res));
     }
 
     /**
      * 新增数据
      * */
     @ApiOperation("新增数据")
-    @PostMapping("/add")
+    @PostMapping("/")
     public RespBean add(@RequestBody Duty duty) {
         duty.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.service.add(duty) == 1) {
@@ -82,7 +96,7 @@ public class DutyController {
      * 修改数据
      * */
     @ApiOperation("修改数据")
-    @PostMapping("/update")
+    @PutMapping("/")
     public RespBean update(@RequestBody Duty duty) {
         String note = duty.getNote();
         if (note == null) note = this.service.selectById(duty.getId()).getNote();
@@ -108,7 +122,7 @@ public class DutyController {
         duty.setNote(duty.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "删除"));
         duty.setStatus(1);
         if (this.service.update(duty) == 1) {
-            return RespBean.error("删除值班表成功");
+            return RespBean.ok("删除值班表成功");
         }
         return RespBean.error("删除值班表失败");
     }
