@@ -96,7 +96,7 @@
                 and ID = #{id}
             </if>
             <if test="name != null and name != ''">
-                and Name = #{name}
+                and Name like CONCAT('%', #{name}, '%')
             </if>
             <if test="beginDate != null and beginDate != ''">
                 and Begin_Date <![CDATA[>=]]> #{beginDate}

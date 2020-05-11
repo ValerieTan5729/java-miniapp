@@ -94,6 +94,9 @@
         from record left join user on user.ID = record.User_ID
                     left join duty on duty.ID = record.Duty_ID
         <include refid="selectCondition" />
+        <if test="sort != null and order != null">
+            order by ${sort} ${order}
+        </if>
         <if test="page != null and limit != null">
             limit #{page}, #{limit}
         </if>

@@ -2,6 +2,7 @@ package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.Record;
 import com.github.valerie.wx.miniapp.service.RecordService;
+import com.github.valerie.wx.miniapp.utils.FileUtils;
 import com.github.valerie.wx.miniapp.utils.NoteUtils;
 import com.github.valerie.wx.miniapp.utils.UserUtils;
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
@@ -11,8 +12,17 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +58,9 @@ public class RecordController {
                            @RequestParam(value = "beginDate", required = false) String beginDate,
                            @RequestParam(value = "endDate", required = false) String endDate,
                            @RequestParam(value = "place", required = false) String place,
-                           @RequestParam(value = "date", required = false) String date) {
+                           @RequestParam(value = "date", required = false) String date,
+                           @RequestParam(value = "sortby", required = false) String sort,
+                           @RequestParam(value= "order", required = false) String order) {
         Map<String, Object> param = new HashMap<>();
         param.put("page", (page - 1) * limit);
         param.put("limit", limit);
@@ -59,6 +71,14 @@ public class RecordController {
         param.put("endDate", endDate);
         param.put("place", place);
         param.put("date", date);
+        if (sort != null && order != null) {
+            param.put("sort", "Date");
+            if (order.equals("ascending")) {
+                param.put("order", "asc");
+            } else if (order.equals("descending")) {
+                param.put("order", "desc");
+            }
+        }
         List<Record> res = this.service.select(param);
         Long total = this.service.count(param);
         return RespBean.ok("获取成功", new RespPageBean(total, res));
@@ -126,6 +146,23 @@ public class RecordController {
             return RespBean.ok("删除成功");
         }
         return RespBean.error("删除失败");
+    }
+
+    // 图片在线预览
+    @ApiOperation("打卡图片在线预览")
+    @GetMapping(value = "/img/", produces = MediaType.IMAGE_PNG_VALUE)
+    public Object preview(@RequestParam("path") String path) throws FileNotFoundException {
+        // String path = this.recordService.selectById(id).getImgPath();
+        HttpHeaders headers = new HttpHeaders();
+        log.info("path:{}", path);
+        if (path != null) {
+            InputStream input = new FileInputStream(new File(FileUtils.getUploadDir() + path));
+            InputStreamResource resource = new InputStreamResource(input);
+            // HttpHeaders headers = new HttpHeaders();
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+        headers.set("message", "no file found");
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
 }

@@ -215,6 +215,7 @@ public class WxMaUserController {
         // return ScanQrCodeUtils.scan(wxService, img);
     }
 
+    /*
     // 图片在线预览
     @GetMapping(value = "/img/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     public Object preview(@PathVariable("id") Long id) throws FileNotFoundException {
@@ -229,7 +230,7 @@ public class WxMaUserController {
         }
         headers.set("message", "no file found");
         return new ResponseEntity(headers, HttpStatus.OK);
-    }
+    }*/
 
     private String getCurrentUserName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
