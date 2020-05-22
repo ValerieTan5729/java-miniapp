@@ -8,6 +8,7 @@
         <result property="beginDate" column="Begin_Date" jdbcType="TIMESTAMP"/>
         <result property="endDate" column="End_Date" jdbcType="TIMESTAMP"/>
         <result property="remark" column="Remark" jdbcType="VARCHAR"/>
+        <result property="active" column="Active" jdbcType="INTEGER"/>
         <result property="status" column="Status" jdbcType="INTEGER"/>
         <result property="note" column="Note" jdbcType="VARCHAR"/>
         <result property="tempA" column="temp_a" jdbcType="VARCHAR"/>
@@ -15,7 +16,7 @@
     </resultMap>
     
     <sql id="Base_Column_List" >
-        ID, Name, Begin_Date, End_Date, Remark, Status, Note, temp_a, temp_b
+        ID, Name, Begin_Date, End_Date, Remark, Active, Status, Note, temp_a, temp_b
     </sql>
 
     <!--查询单个-->
@@ -106,6 +107,9 @@
             </if>
             <if test="remark != null and remark != ''">
                 and Remark = #{remark}
+            </if>
+            <if test="active != null">
+                and Active = #{active}
             </if>
             <if test="status != null">
                 and Status = #{status}
@@ -201,6 +205,9 @@
             </if>
             <if test="remark != null and remark != ''">
                 Remark = #{remark},
+            </if>
+            <if test="active != null">
+                Active = #{active},
             </if>
             <if test="status != null">
                 Status = #{status},

@@ -51,11 +51,17 @@ public class Duty {
     */    
     @ApiModelProperty("备注")
     private String remark;
+
+    /**
+     * 当前当值的值班表(0未生效的/1当前的)
+     */
+    @ApiModelProperty("当前当值的值班表(0未生效的/1当前的)")
+    private Integer active;
     
     /**
-    * 用户状态(0有效/1无效)
+    * 状态(0有效/1无效)
     */    
-    @ApiModelProperty("用户状态(0有效/1无效)")
+    @ApiModelProperty("状态(0有效/1无效)")
     private Integer status;
     
     /**

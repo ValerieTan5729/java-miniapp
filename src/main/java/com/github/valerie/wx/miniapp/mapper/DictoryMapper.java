@@ -26,6 +26,11 @@ public interface DictoryMapper {
     List<Dictory> getDutyLevel(Long id);
 
     /**
+     * 获取地点名称列表
+     * */
+    List<String> getPlaceList(Long id);
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键

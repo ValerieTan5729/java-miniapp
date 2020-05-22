@@ -18,11 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +111,7 @@ public class RecordController {
     @GetMapping("/user/{id}")
     public RespBean selectByUserId(@PathVariable Long id,
                                    @RequestParam(value = "page", defaultValue = "1") int page,
-                                   @RequestParam(value = "limit", defaultValue = "10") int limit) {
+                                   @RequestParam(value = "limit", defaultValue = "100") int limit) {
         Map<String, Object> param = new HashMap<>();
         param.put("userId", id);
         param.put("page", (page - 1) * limit);
@@ -121,11 +123,35 @@ public class RecordController {
     }
 
     /**
+     * 新增打卡数据
+     * */
+    /*
+    @ApiOperation("新增数据")
+    @PostMapping("/add")
+    public RespBean add(@RequestParam("userId") Long userId,
+                        @RequestParam("dutyId") Long dutyId,
+                        @RequestParam("place") Integer place,
+                        @RequestParam("remark") String remark,
+                        @RequestParam("img") MultipartFile img) {
+        if (img.isEmpty()) {
+            return RespBean.error("接收图片出错");
+        }
+
+        Record record = new Record();
+        record.setUserId(userId);
+        record.setDutyId(dutyId);
+        record.setPlace(String.valueOf(place));
+        record.setRemark(remark);
+        return null;
+    }*/
+
+    /**
      * 新增数据
      * */
     @ApiOperation("新增数据")
     @PostMapping("/add")
     public RespBean add(@RequestBody Record record) {
+        record.setDate(new Date());
         record.setNote(NoteUtils.note(UserUtils.getCurrentUser().getName(), "新增"));
         if (this.service.add(record) == 1) {
             return RespBean.ok("打卡成功");

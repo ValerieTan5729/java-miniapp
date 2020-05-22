@@ -101,8 +101,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // 忽视微信小程序的API接口
-        web.ignoring().antMatchers( "/valerie/hello","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
+        // 忽视swaggger2
+        web.ignoring().antMatchers( "/v2/api-docs", "/definitions/**", "/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui",
+                                    "/css/**","/js/**", "/index.html","/img/**","/fonts/**","/favicon.ico");
         // 忽略的url无法获取当前用户的登录信息
         // web.ignoring().antMatchers("/wx/user/**","/css/**","/js/**","/index.html","/img/**","/fonts/**","/favicon.ico");
         // web.ignoring().antMatchers("/*/**");
@@ -152,7 +153,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 PrintWriter out = response.getWriter();
                 RespBean respBean = RespBean.error("访问失败!");
                 if (exception instanceof InsufficientAuthenticationException) {
-                    respBean.setMsg("登录认证失败，请联系系统管理员");
+                    respBean.setMsg("登录认证失败");
                 }
                 out.write(new ObjectMapper().writeValueAsString(respBean));
                 out.flush();

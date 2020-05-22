@@ -13,6 +13,11 @@ import java.util.Map;
 public interface DutyService {
 
     /**
+     * 获取当前总值
+     * */
+    Duty getCurrentDuty();
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键

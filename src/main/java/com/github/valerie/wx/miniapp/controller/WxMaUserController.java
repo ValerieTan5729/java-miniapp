@@ -1,6 +1,7 @@
 package com.github.valerie.wx.miniapp.controller;
 
 import com.github.valerie.wx.miniapp.model.User;
+import com.github.valerie.wx.miniapp.service.DepartmentService;
 import com.github.valerie.wx.miniapp.service.DictoryService;
 import com.github.valerie.wx.miniapp.service.RecordService;
 import com.github.valerie.wx.miniapp.service.UserService;
@@ -46,7 +47,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/wx/user/{appid}")
+@RequestMapping("/wx")
 public class WxMaUserController {
 
     @Autowired
@@ -59,15 +60,18 @@ public class WxMaUserController {
     private DictoryService dictoryService;
 
     @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
     private RecordService recordService;
 
     /**
      * 登陆接口
      */
-    @GetMapping("/login")
-    public String login(HttpServletRequest request, @PathVariable String appid, @RequestParam String code, @RequestParam String phone) {
+    @GetMapping("/user/{appid}/login")
+    public RespBean login(HttpServletRequest request, @PathVariable String appid, @RequestParam String code) {
         if (StringUtils.isBlank(code)) {
-            return "empty jscode";
+            return RespBean.error("empty jscode");
         }
 
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
@@ -78,6 +82,7 @@ public class WxMaUserController {
             log.info("用户的openId为{}", session.getOpenid());
             log.info("用户的unionId为{}", session.getUnionid());
             // TODO 可以增加自己的逻辑，关联业务相关数据
+            /*
             log.info("before -- getCurrentUserName : {}", getCurrentUserName());
             User user = (User) this.userService.loadUserByUsername(phone);
             if (user != null) {
@@ -92,11 +97,11 @@ public class WxMaUserController {
                 String sessionId = request.getSession().getId();
                 log.info("after -- getCurrentUserName : {}", getCurrentUserName());
                 return JsonUtils.toJson(sessionId);
-            }
-            return JsonUtils.toJson(session);
+            }*/
+            return RespBean.ok("获取openId和sessionKey成功", session);
         } catch (WxErrorException e) {
             log.error(e.getMessage(), e);
-            return e.toString();
+            return RespBean.error(e.getMessage());
         }
     }
 
@@ -105,7 +110,7 @@ public class WxMaUserController {
      * 获取用户信息接口
      * </pre>
      */
-    @GetMapping("/info")
+    @GetMapping("/user/{appid}/info")
     public String info(@PathVariable String appid,
                        @RequestParam String sessionKey,
                        @RequestParam String signature,
@@ -130,8 +135,8 @@ public class WxMaUserController {
      * 获取用户绑定手机号信息
      * </pre>
      */
-    @GetMapping("/phone")
-    public String phone(HttpServletRequest request,
+    @GetMapping("/user/{appid}/phone")
+    public RespBean phone(HttpServletRequest request,
                         @PathVariable String appid,
                         @RequestParam String sessionKey,
                         @RequestParam String signature,
@@ -142,14 +147,15 @@ public class WxMaUserController {
 
         // 用户信息校验
         if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
-            return "user check failed";
+            return RespBean.error("微信验证登录出错, 请重新登录");
         }
 
         // 解密
         WxMaPhoneNumberInfo phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
 
-        /*
+        // User user = (User) this.userService.loadUserByUsername(phoneNoInfo.getPhoneNumber());
         User user = (User) this.userService.loadUserByUsername(phoneNoInfo.getPhoneNumber());
+
         if (user != null) {
             log.info("password is {}", user.getPassword());
             // 微信手机号码直接登录后台
@@ -160,16 +166,24 @@ public class WxMaUserController {
             SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
             request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
             String sessionId = request.getSession().getId();
-            return JsonUtils.toJson(sessionId);
+            user.setPassword(null);
+            user.setDepName(departmentService.selectById(user.getDepId()).getName());
+            user.setDutyLevelName(dictoryService.selectById(Long.valueOf(user.getDutyLevelId())).getName());
+            Map<String, Object> res = new HashMap<>();
+            res.put("user", user);
+            res.put("cookie", sessionId);
+            return RespBean.ok("成功登录总值打卡后台", res);
+        } else {
+            System.out.println("找不到相应的用户");
+            return RespBean.error("找不到相应的用户");
         }
-        */
-        return JsonUtils.toJson(phoneNoInfo);
+        // return JsonUtils.toJson(phoneNoInfo);
     }
 
     /**
      * 获取access_token
      */
-    @GetMapping("/token")
+    @GetMapping("/user/{appid}/token")
     public String token(@PathVariable String appid) throws WxErrorException {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
         String token = wxService.getAccessToken();
@@ -185,7 +199,7 @@ public class WxMaUserController {
      *
      * 如果需要上传带图片的表单信息, 需要RequestParam接受数据
      * */
-    @PostMapping("/scan")
+    @PostMapping("/{appid}/scan")
     public RespBean scan(@PathVariable String appid,
                          @RequestParam("img") MultipartFile img) {
         if (img.isEmpty()) return RespBean.error("服务器没有接收到图片");
@@ -209,7 +223,7 @@ public class WxMaUserController {
             }
         }
         Map<String, Object> param = new HashMap<>();
-        param.put("place", this.dictoryService.selectById((long) (index + +3)).getName());
+        param.put("place", this.dictoryService.selectById((long) (index + +3)).getId());
         param.put("imgUrl", res.get("path"));
         return RespBean.ok("上传成功", param);
         // return ScanQrCodeUtils.scan(wxService, img);
@@ -231,6 +245,19 @@ public class WxMaUserController {
         headers.set("message", "no file found");
         return new ResponseEntity(headers, HttpStatus.OK);
     }*/
+
+    @GetMapping(value = "/img", produces = MediaType.IMAGE_PNG_VALUE)
+    public Object preview(@RequestParam("path") String path) throws FileNotFoundException {
+        HttpHeaders headers = new HttpHeaders();
+        System.out.println("path");
+        if (path != null && !path.equals("undefined")) {
+            InputStream input = new FileInputStream(new File(FileUtils.getUploadDir() + path));
+            InputStreamResource resource = new InputStreamResource(input);
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+        headers.set("message", "no file found");
+        return new ResponseEntity(headers, HttpStatus.OK);
+    }
 
     private String getCurrentUserName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

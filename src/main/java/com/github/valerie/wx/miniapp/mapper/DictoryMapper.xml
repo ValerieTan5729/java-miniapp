@@ -46,6 +46,12 @@
         where Parent_ID = #{id} and Status = 0
     </select>
 
+    <select id="getPlaceList" resultType="java.lang.String">
+        select Name
+        from dictory
+        where Parent_ID = #{id} and Status = 0
+    </select>
+
     <!--查询单个-->
     <select id="selectById" resultMap="DictoryMap">
         select

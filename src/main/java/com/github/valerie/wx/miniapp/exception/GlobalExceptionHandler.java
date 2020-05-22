@@ -1,6 +1,7 @@
 package com.github.valerie.wx.miniapp.exception;
 
 import com.github.valerie.wx.miniapp.utils.response.RespBean;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,5 +17,10 @@ public class GlobalExceptionHandler {
             return RespBean.error("该数据有关联数据，操作失败!");
         }
         return RespBean.error("数据库异常，操作失败!");
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public RespBean usernameNotFoundException(UsernameNotFoundException e) {
+        return RespBean.error("该手机号尚未录入系统");
     }
 }

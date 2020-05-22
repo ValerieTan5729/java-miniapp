@@ -47,6 +47,14 @@ public class DictoryServiceImpl implements DictoryService {
     }
 
     /**
+     * 获取地点名称列表
+     * */
+    @Override
+    public List<String> getPlaceList(Long id) {
+        return this.dictoryMapper.getPlaceList(id);
+    }
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键

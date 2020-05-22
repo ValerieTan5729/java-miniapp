@@ -44,6 +44,19 @@ public class DutyController {
     }
 
     /**
+     * 获取当前值班的总值
+     * */
+    @ApiOperation("获取当前值班的总值")
+    @GetMapping("/current")
+    public RespBean getCurrent() {
+        Duty res = this.service.getCurrentDuty();
+        if (res != null) {
+            return RespBean.ok(res);
+        }
+        return RespBean.ok("当前没有值班");
+    }
+
+    /**
      * 获取列表
      * */
     @ApiOperation("获取列表")
@@ -105,6 +118,39 @@ public class DutyController {
             return RespBean.ok("修改值班表成功");
         }
         return RespBean.error("修改值班表失败");
+    }
+
+    /**
+     * 激活值班表
+     * */
+    @ApiOperation("激活值班表")
+    @PutMapping("/{id}/active")
+    public RespBean active(@PathVariable Long id) {
+        if (this.service.getCurrentDuty() != null) {
+            return RespBean.error("当前已有值班表在执行");
+        }
+        Duty duty = this.service.selectById(id);
+        duty.setActive(1);
+        duty.setNote(duty.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "激活"));
+        if (this.service.update(duty) == 1) {
+            return RespBean.ok("激活值班表成功");
+        }
+        return RespBean.error("激活值班表失败");
+    }
+
+    /**
+     * 冻结值班表(使值班表不运转)
+     * */
+    @ApiOperation("冻结值班表")
+    @PutMapping("/{id}/inactive")
+    public RespBean inactive(@PathVariable Long id) {
+        Duty duty = this.service.selectById(id);
+        duty.setActive(0);
+        duty.setNote(duty.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "冻结"));
+        if (this.service.update(duty) == 1) {
+            return RespBean.ok("冻结值班表成功");
+        }
+        return RespBean.error("冻结值班表失败");
     }
 
     /**

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,15 @@ public class DictoryController {
     @GetMapping("/duty")
     public RespBean selectDuty() {
         return RespBean.ok(this.service.getDutyLevel((long) 11));
+    }
+
+    /**
+     * 获取总值的值班地点列表
+     * */
+    @ApiOperation("获取总值的值班地点列表")
+    @GetMapping("/place")
+    public RespBean selectPlace() {
+        return RespBean.ok(this.service.getPlaceList((long) 2));
     }
 
     /**

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,21 @@ public class DutyServiceImpl implements DutyService {
         
     @Autowired
     private DutyMapper dutyMapper;
+
+    /**
+     * 获取当前总值
+     * */
+    @Override
+    public Duty getCurrentDuty() {
+        Map<String, Object> param = new HashMap<>();
+        param.put("active", 1);
+        param.put("status", 0);
+        List<Duty> res = this.dutyMapper.select(param);
+        if (res.size() != 0) {
+            return res.get(0);
+        }
+        return null;
+    }
 
     /**
      * 通过ID查询单条数据
