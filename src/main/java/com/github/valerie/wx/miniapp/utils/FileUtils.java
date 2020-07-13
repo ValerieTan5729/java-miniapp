@@ -17,7 +17,8 @@ import java.util.UUID;
 
 @Slf4j
 public class FileUtils {
-    public static final String UPLOAD_DIR = "D://upload//";
+    // public static final String UPLOAD_DIR = "D://upload//";
+    public static final String UPLOAD_DIR = "/clock/upload/";
 
     // 上传文件
     public static Map<String, Object> upload(MultipartFile file) {
@@ -42,6 +43,7 @@ public class FileUtils {
             // throw e;
             // logger.error(e.getClass(), e);
         }
+        filePath = filePath.replaceAll("\\\\", "/");
         Map<String, Object> param = new HashMap<>();
         param.put("file", dest);
         param.put("path", filePath);

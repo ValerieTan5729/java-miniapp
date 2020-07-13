@@ -26,6 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locales>zh_CN</project.build.locales>
         <docker.image.prefix>wx-miniapp-demo</docker.image.prefix>
+
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>

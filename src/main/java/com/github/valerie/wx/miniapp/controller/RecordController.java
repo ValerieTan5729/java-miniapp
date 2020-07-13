@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +121,23 @@ public class RecordController {
         List<Record> res = this.service.select(param);
         Long total = this.service.count(param);
         return RespBean.ok("成功获取该用户下的打卡记录", new RespPageBean(total, res));
+    }
+
+    /**
+     * 获取某用户当天在某个值班表下的打卡记录
+     * */
+    @ApiOperation("获取某用户当天在某个值班表下的打卡记录")
+    @GetMapping("/check/{type}")
+    public RespBean checkRecord(@PathVariable("type") int type,
+                                @RequestParam("userId") Long userId,
+                                @RequestParam("dutyId") Long dutyId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        param.put("dutyId", dutyId);
+        param.put("date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        List<Map<String, Object>> res = this.service.checkRecord(param, type);
+        res.forEach(item -> System.out.println(item.toString()));
+        return RespBean.ok(res);
     }
 
     /**

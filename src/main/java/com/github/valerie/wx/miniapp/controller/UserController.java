@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-    
+
     @Autowired
     private UserService userService;
 
@@ -50,7 +50,7 @@ public class UserController {
     public RespBean selectOne(@PathVariable Long id) {
         return RespBean.ok("获取成功", this.userService.selectById(id));
     }
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -86,7 +86,7 @@ public class UserController {
         Long total = this.userService.count(param);
         return RespBean.ok("获取成功", new RespPageBean(total, res));
     }
-    
+
     /**
      * 新增数据
      *
@@ -144,11 +144,14 @@ public class UserController {
      * @return 实例对象
      */
     @ApiOperation("修改用户密码")
-    @PostMapping("/{id}/password")
-    public RespBean updatePassword(@PathVariable Long id, @RequestParam("oldPass") String oldPassword, @RequestParam("newPass") String newPassword) {
+    @PutMapping("/{id}/password")
+    public RespBean updatePassword(@PathVariable Long id, @RequestBody Map<String, String> pass) {
         User user = this.userService.selectById(id);
-        if (new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
-            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        String password = this.userService.selectPasswordById(id);
+        // log.info("oldPassword:{}, newPassword:{}", pass.get("oldPassword"), pass.get("newPassword"));
+        // log.info("user password is {}", password);
+        if (new BCryptPasswordEncoder().matches(pass.get("oldPassword"), password)) {
+            user.setPassword(new BCryptPasswordEncoder().encode(pass.get("newPassword")));
             user.setNote(user.getNote() + '|' + NoteUtils.note(UserUtils.getCurrentUser().getName(), "修改密码"));
             if (this.userService.update(user) == 1) {
                 return RespBean.ok("修改密码成功");

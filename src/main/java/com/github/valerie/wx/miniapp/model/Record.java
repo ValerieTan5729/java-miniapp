@@ -20,69 +20,69 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Record {
     /**
     * 打卡记录ID
-    */    
+    */
     @ApiModelProperty("打卡记录ID")
     private Long id;
-    
+
     /**
     * 用户ID
-    */    
+    */
     @ApiModelProperty("用户ID")
     private Long userId;
-    
+
     /**
     * 值班表ID
-    */    
+    */
     @ApiModelProperty("值班表ID")
     private Long dutyId;
-    
+
     /**
     * 打卡日期
-    */    
+    */
     @ApiModelProperty("打卡日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date date;
-    
+
     /**
     * 打卡地点
-    */    
+    */
     @ApiModelProperty("打卡地点")
     private String place;
-    
+
     /**
     * 二维码照片path
-    */    
+    */
     @ApiModelProperty("二维码照片path")
     private String imgPath;
-    
+
     /**
     * 备注
-    */    
+    */
     @ApiModelProperty("备注")
     private String remark;
-    
+
     /**
     * 状态(0有效/1无效)
-    */    
+    */
     @ApiModelProperty("状态(0有效/1无效)")
     private Integer status;
-    
+
     /**
     * 修改记录
-    */    
+    */
     @ApiModelProperty("修改记录")
     private String note;
-    
+
     /**
     * 备用字段1
-    */    
+    */
     @ApiModelProperty("备用字段1")
     private String tempA;
-    
+
     /**
     * 备用字段2
-    */    
+    */
     @ApiModelProperty("备用字段2")
     private String tempB;
 
@@ -97,7 +97,17 @@ public class Record {
      */
     @ApiModelProperty("值班表名称")
     private String dutyName;
-    
 
+    /**
+     * 值班地点名称
+     * */
+    @ApiModelProperty("值班地点名称")
+    private String placeName;
+
+    /**
+     * 用户值班级别
+     * */
+    @ApiModelProperty("用户值班级别")
+    private String levelName;
 
 }

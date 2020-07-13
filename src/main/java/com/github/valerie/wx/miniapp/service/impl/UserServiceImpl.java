@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Service("userService")
 public class UserServiceImpl implements UserService {
-        
+
     @Autowired
     private UserMapper userMapper;
 
@@ -42,6 +42,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String selectPasswordById(Long id) {
+        return this.userMapper.selectPasswordById(id);
+    }
+
+    @Override
     public User selectIdWithRole(Long id) {
         return this.userMapper.selectIdWithRole(id);
     }
@@ -57,7 +62,7 @@ public class UserServiceImpl implements UserService {
     public List<User> selectAllPaging(int offset, int limit) {
         return this.userMapper.selectAllPaging(offset, limit);
     }
-    
+
     /**
      * 通过实体作为筛选条件查询
      *
@@ -76,7 +81,7 @@ public class UserServiceImpl implements UserService {
     public User findUserByPhone(String phone) {
         return this.userMapper.loadUserByPhone(phone);
     }
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -107,7 +112,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public int add(User user) {
-                        
+
         return this.userMapper.add(user);
     }
 
@@ -119,7 +124,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public int update(User user) {
-                        
+
         return this.userMapper.update(user);
     }
 

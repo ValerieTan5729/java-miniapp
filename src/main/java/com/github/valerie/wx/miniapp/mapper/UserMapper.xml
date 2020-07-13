@@ -26,7 +26,7 @@
             <result column="rnameZh" property="namezh"/>
         </collection>
     </resultMap>
-    
+
     <sql id="Base_Column_List" >
         user.ID, user.Name, user.Phone, user.Open_ID, user.Duty_Level_ID, user.Dep_ID, user.Remark, user.Status, user.Note, user.temp_a, user.temp_b
     </sql>
@@ -44,6 +44,12 @@
         <include refid="Base_Column_List" />, department.Name as Dep_Name
         from user
              left join department on department.ID = user.Dep_ID
+        where user.ID = #{id}
+    </select>
+
+    <select id="selectPasswordById" resultType="java.lang.String">
+        select user.password
+        from user
         where user.ID = #{id}
     </select>
 
@@ -113,7 +119,7 @@
             </if>
         </where>
     </select>
-    
+
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="UserMap">
         select
@@ -217,7 +223,7 @@
                 temp_b,
             </if>
         </trim>
-        values        
+        values
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null">
                 #{id},

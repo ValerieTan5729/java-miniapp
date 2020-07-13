@@ -21,7 +21,8 @@
             </pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:/Valerie/log/mini/info.%d.log</fileNamePattern>
+<!--            <fileNamePattern>D:/Valerie/log/mini/info.%d.log</fileNamePattern>-->
+            <fileNamePattern>/clock/log/info/info.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -35,7 +36,8 @@
             </pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:/Valerie/log/mini/error.%d.log</fileNamePattern>
+<!--            <fileNamePattern>D:/Valerie/log/mini/error.%d.log</fileNamePattern>-->
+            <fileNamePattern>/clock/log/error/error.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 

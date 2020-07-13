@@ -1,5 +1,6 @@
 package com.github.valerie.wx.miniapp.service.impl;
 
+import com.github.valerie.wx.miniapp.mapper.DictoryMapper;
 import com.github.valerie.wx.miniapp.model.Record;
 import com.github.valerie.wx.miniapp.mapper.RecordMapper;
 import com.github.valerie.wx.miniapp.service.RecordService;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +20,12 @@ import java.util.Map;
  */
 @Service("recordService")
 public class RecordServiceImpl implements RecordService {
-        
+
     @Autowired
     private RecordMapper recordMapper;
+
+    @Autowired
+    private DictoryMapper dictoryMapper;
 
     /**
      * 通过ID查询单条数据
@@ -44,7 +49,7 @@ public class RecordServiceImpl implements RecordService {
     public List<Record> selectAllPaging(int offset, int limit) {
         return this.recordMapper.selectAllPaging(offset, limit);
     }
-    
+
     /**
      * 通过实体作为筛选条件查询
      *
@@ -55,7 +60,7 @@ public class RecordServiceImpl implements RecordService {
     public List<Record> selectAll(Record record) {
         return this.recordMapper.selectAll(record);
     }
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -66,7 +71,7 @@ public class RecordServiceImpl implements RecordService {
     public List<Record> select(Map<String, Object> param) {
         return this.recordMapper.select(param);
     }
-    
+
     /**
      * 获取满足条件的条目数
      *
@@ -76,6 +81,14 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Long count(Map<String, Object> param) {
         return this.recordMapper.count(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> checkRecord(Map<String, Object> param, int type) {
+        String place = type == 0 ? "(3,4,5,6)" : "(7,8,9,10)";
+        param.put("place", place);
+        // List<Map<String, Object>> res = this.recordMapper.checkUserRecord(param);
+        return this.recordMapper.checkUserRecord(param);
     }
 
     /**

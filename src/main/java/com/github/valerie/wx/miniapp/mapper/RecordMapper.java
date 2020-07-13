@@ -40,7 +40,7 @@ public interface RecordMapper {
      * @return 对象列表
      */
     List<Record> selectAll(Record record);
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -48,7 +48,7 @@ public interface RecordMapper {
      * @return 对象列表
      */
     List<Record> select(Map<String, Object> param);
-    
+
     /**
      * 获取满足条件的条目数
      *
@@ -56,6 +56,11 @@ public interface RecordMapper {
      * @return long
      */
     Long count(Map<String, Object> param);
+
+    /**
+     * 获取某用户在某个值班表下的打卡记录
+     * */
+    List<Map<String, Object>> checkUserRecord(Map<String, Object> param);
 
     /**
      * 新增数据

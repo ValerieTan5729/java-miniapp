@@ -22,6 +22,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
@@ -145,6 +146,12 @@ public class WxMaUserController {
                         @RequestParam String iv) {
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
 
+        log.info("\nappid is {}", appid);
+        log.info("\nsessionKey: {}\nsignature: {}\nrawData: {}\n", sessionKey, signature, rawData);
+        log.info("\nencryptedData: {}\niv: {}\n", encryptedData, iv);
+
+        log.info("微信验证登录验证：{}", wxService.getUserService().checkUserInfo(sessionKey, rawData, signature));
+
         // 用户信息校验
         if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
             return RespBean.error("微信验证登录出错, 请重新登录");
@@ -175,7 +182,8 @@ public class WxMaUserController {
             return RespBean.ok("成功登录总值打卡后台", res);
         } else {
             System.out.println("找不到相应的用户");
-            return RespBean.error("找不到相应的用户");
+            throw new UsernameNotFoundException("该手机号尚未录入系统");
+            // return RespBean.error("找不到相应的用户");
         }
         // return JsonUtils.toJson(phoneNoInfo);
     }

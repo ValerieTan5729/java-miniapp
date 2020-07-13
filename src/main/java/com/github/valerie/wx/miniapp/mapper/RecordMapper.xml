@@ -16,8 +16,10 @@
         <result property="tempB" column="temp_b" jdbcType="VARCHAR"/>
         <result property="userName" column="User_Name" jdbcType="VARCHAR"/>
         <result property="dutyName" column="Duty_Name" jdbcType="VARCHAR"/>
+        <result property="placeName" column="Place_Name" jdbcType="VARCHAR"/>
+        <result property="levelName" column="Level_Name" jdbcType="VARCHAR"/>
     </resultMap>
-    
+
     <sql id="Base_Column_List" >
         record.ID, record.User_ID, record.Duty_ID, record.Date, record.Place, record.Img_Path, record.Remark, record.Status, record.Note, record.temp_a, record.temp_b
     </sql>
@@ -86,13 +88,15 @@
             </if>
         </where>
     </select>
-    
+
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="RecordMap">
         select
-        <include refid="Base_Column_List" />, user.Name as User_Name, duty.Name as Duty_Name
-        from record left join user on user.ID = record.User_ID
-                    left join duty on duty.ID = record.Duty_ID
+        <include refid="Base_Column_List" />, user.Name as User_Name, duty.Name as Duty_Name, dictory.Name as Place_Name, user.Level_Name as Level_Name
+        from record left join duty on duty.ID = record.Duty_ID
+                    left join dictory on dictory.ID = record.Place
+                    left join (SELECT user.ID, user.Name, dictory.Name as Level_Name FROM user LEFT JOIN dictory on user.Duty_Level_ID = dictory.ID) user
+                        on user.ID = record.User_ID
         <include refid="selectCondition" />
         <if test="sort != null and order != null">
             order by ${sort} ${order}
@@ -101,13 +105,13 @@
             limit #{page}, #{limit}
         </if>
     </select>
-    
+
     <select id="count" resultType="java.lang.Long">
         select Count(*)
         from record
         <include refid="selectCondition" />
     </select>
-    
+
     <sql id="selectCondition">
         <where>
              <if test="id != null">
@@ -152,9 +156,22 @@
         </where>
     </sql>
 
+    <select id="checkUserRecord" resultType="java.util.Map">
+        SELECT dictory.ID id, dictory.Name name, MAX(DATE_FORMAT(record.Date, '%H:%i:%s')) time, IF(record.Date, TRUE, FALSE) isChecked
+        FROM dictory LEFT JOIN record
+            ON dictory.ID = record.Place
+               AND record.User_ID = #{userId}
+               AND record.Duty_ID = #{dutyId}
+               AND DATE_FORMAT(record.Date, '%Y-%m-%d') = #{date}
+               AND record.Status = 0
+        WHERE dictory.ID in ${place}
+        GROUP BY id, name, isChecked
+        ORDER BY id
+    </select>
+
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">
-        insert into record        
+        insert into record
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="userId != null">
                 User_ID,
@@ -187,7 +204,7 @@
                 temp_b,
             </if>
         </trim>
-        values        
+        values
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="userId != null">
                 #{userId},

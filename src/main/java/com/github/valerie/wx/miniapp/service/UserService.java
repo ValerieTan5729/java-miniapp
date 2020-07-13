@@ -23,6 +23,8 @@ public interface UserService extends UserDetailsService {
      */
     User selectById(Long id);
 
+    String selectPasswordById(Long id);
+
     User selectIdWithRole(Long id);
 
     /**
@@ -47,7 +49,7 @@ public interface UserService extends UserDetailsService {
      * 通过手机号码查询用户
      * */
     User findUserByPhone(String phone);
-    
+
     /**
      * 通过Map作为筛选条件查询
      *

@@ -195,7 +195,7 @@ wx:
     
     - 测试docker api
     
-        `curl http://127.0.0.1:[port]/wersion` or `curl http://[ip]:[port]/wersion`
+        `curl http://127.0.0.1:[port]/version` or `curl http://[ip]:[port]/version`
 
 #### 2. docker部署文档(/src/main/docker/Dockerfile)
 

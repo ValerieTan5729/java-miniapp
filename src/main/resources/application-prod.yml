@@ -1,0 +1,31 @@
+server:
+    servlet:
+        context-path: /mini
+        session:
+            timeout: 259200
+    port: 2005
+
+logging:
+    level:
+        com.github.valerie.wx.miniapp: debug
+        org.springframework.web: info
+        cn.binarywang.wx.miniapp: debug
+
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        username: root
+        password: 0824,Love
+        url: jdbc:mysql://mysql:3306/clock?characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
+    jpa:
+        show-sql: true
+    servlet:
+        multipart:
+            max-file-size: 10MB
+
+wx:
+    miniapp:
+        configs:
+            - appid:
+              secret:
+              msgDataFormat: JSON

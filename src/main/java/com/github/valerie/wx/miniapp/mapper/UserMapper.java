@@ -26,6 +26,8 @@ public interface UserMapper {
      */
     User selectById(Long id);
 
+    String selectPasswordById(Long id);
+
     User selectIdWithRole(Long id);
 
     List<Role> getUserRolesById(Long id);
@@ -47,7 +49,7 @@ public interface UserMapper {
      * @return 对象列表
      */
     List<User> selectAll(User user);
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
