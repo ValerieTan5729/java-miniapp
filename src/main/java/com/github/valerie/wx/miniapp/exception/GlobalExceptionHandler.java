@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public RespBean usernameNotFoundException(UsernameNotFoundException e) {
-        return RespBean.error("该手机号尚未录入系统");
+        return RespBean.ok("该手机号尚未录入系统");
     }
 
     @ExceptionHandler(FileNotFoundException.class)

@@ -95,8 +95,9 @@
         <include refid="Base_Column_List" />, user.Name as User_Name, duty.Name as Duty_Name, dictory.Name as Place_Name, user.Level_Name as Level_Name
         from record left join duty on duty.ID = record.Duty_ID
                     left join dictory on dictory.ID = record.Place
-                    left join (SELECT user.ID, user.Name, dictory.Name as Level_Name FROM user LEFT JOIN dictory on user.Duty_Level_ID = dictory.ID) user
-                        on user.ID = record.User_ID
+                    left join
+                        (SELECT user.ID, user.Name, user.Duty_Level_ID as Level_ID, dictory.Name as Level_Name
+                         FROM user LEFT JOIN dictory on user.Duty_Level_ID = dictory.ID) user on user.ID = record.User_ID
         <include refid="selectCondition" />
         <if test="sort != null and order != null">
             order by ${sort} ${order}
@@ -108,7 +109,11 @@
 
     <select id="count" resultType="java.lang.Long">
         select Count(*)
-        from record
+        from record left join duty on duty.ID = record.Duty_ID
+                    left join dictory on dictory.ID = record.Place
+                    left join
+                        (SELECT user.ID, user.Name, user.Duty_Level_ID as Level_ID, dictory.Name as Level_Name
+                        FROM user LEFT JOIN dictory on user.Duty_Level_ID = dictory.ID) user on user.ID = record.User_ID
         <include refid="selectCondition" />
     </select>
 
@@ -152,6 +157,9 @@
             </if>
             <if test="tempB != null and tempB != ''">
                 and record.temp_b = #{tempB}
+            </if>
+            <if test="level != null and level != ''">
+                and user.Level_ID = #{level}
             </if>
         </where>
     </sql>

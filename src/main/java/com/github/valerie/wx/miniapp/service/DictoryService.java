@@ -33,6 +33,11 @@ public interface DictoryService {
     List<String> getPlaceList(Long id);
 
     /**
+     * 根据父节点ID获取节点信息
+     * */
+    List<Dictory> getNodeInfo(Long id);
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键
@@ -57,7 +62,7 @@ public interface DictoryService {
      * @return 对象列表
      */
     List<Dictory> selectAll(Dictory dictory);
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -65,7 +70,7 @@ public interface DictoryService {
      * @return 对象列表
      */
     List<Dictory> select(Map<String, Object> param);
-    
+
     /**
      * 获取满足条件的条目数
      *

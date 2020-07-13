@@ -64,7 +64,7 @@ public class DictoryController {
     @ApiOperation("获取值班级别")
     @GetMapping("/duty")
     public RespBean selectDuty() {
-        return RespBean.ok(this.service.getDutyLevel((long) 11));
+        return RespBean.ok(this.service.getNodeInfo((long) 11));
     }
 
     /**
@@ -73,7 +73,7 @@ public class DictoryController {
     @ApiOperation("获取总值的值班地点列表")
     @GetMapping("/place")
     public RespBean selectPlace() {
-        return RespBean.ok(this.service.getPlaceList((long) 2));
+        return RespBean.ok(this.service.getNodeInfo((long) 2));
     }
 
     /**

@@ -61,6 +61,7 @@ public class RecordController {
                            @RequestParam(value = "beginDate", required = false) String beginDate,
                            @RequestParam(value = "endDate", required = false) String endDate,
                            @RequestParam(value = "place", required = false) String place,
+                           @RequestParam(value = "level", required = false) Long level,
                            @RequestParam(value = "date", required = false) String date,
                            @RequestParam(value = "sortby", required = false) String sort,
                            @RequestParam(value= "order", required = false) String order) {
@@ -73,6 +74,7 @@ public class RecordController {
         param.put("beginDate", beginDate);
         param.put("endDate", endDate);
         param.put("place", place);
+        param.put("level", level);
         param.put("date", date);
         if (sort != null && order != null) {
             param.put("sort", "Date");

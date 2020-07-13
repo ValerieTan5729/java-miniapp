@@ -18,7 +18,7 @@ import java.util.Map;
  */
 @Service("dictoryService")
 public class DictoryServiceImpl implements DictoryService {
-        
+
     @Autowired
     private DictoryMapper dictoryMapper;
 
@@ -54,6 +54,11 @@ public class DictoryServiceImpl implements DictoryService {
         return this.dictoryMapper.getPlaceList(id);
     }
 
+    @Override
+    public List<Dictory> getNodeInfo(Long id) {
+        return this.dictoryMapper.getNodeInfo(id);
+    }
+
     /**
      * 通过ID查询单条数据
      *
@@ -76,7 +81,7 @@ public class DictoryServiceImpl implements DictoryService {
     public List<Dictory> selectAllPaging(int offset, int limit) {
         return this.dictoryMapper.selectAllPaging(offset, limit);
     }
-    
+
     /**
      * 通过实体作为筛选条件查询
      *
@@ -87,7 +92,7 @@ public class DictoryServiceImpl implements DictoryService {
     public List<Dictory> selectAll(Dictory dictory) {
         return this.dictoryMapper.selectAll(dictory);
     }
-    
+
     /**
      * 通过Map作为筛选条件查询
      *
@@ -98,7 +103,7 @@ public class DictoryServiceImpl implements DictoryService {
     public List<Dictory> select(Map<String, Object> param) {
         return this.dictoryMapper.select(param);
     }
-    
+
     /**
      * 获取满足条件的条目数
      *
@@ -118,7 +123,7 @@ public class DictoryServiceImpl implements DictoryService {
      */
     @Override
     public int add(Dictory dictory) {
-                        
+
         return this.dictoryMapper.add(dictory);
     }
 
@@ -130,7 +135,7 @@ public class DictoryServiceImpl implements DictoryService {
      */
     @Override
     public int update(Dictory dictory) {
-                        
+
         return this.dictoryMapper.update(dictory);
     }
 

@@ -20,7 +20,7 @@
     <resultMap id="DictoryWithHasChildren" type="com.github.valerie.wx.miniapp.model.Dictory" extends="DictoryMap">
         <result property="hasChildren" column="count"/>
     </resultMap>
-    
+
     <sql id="Base_Column_List" >
         ID, Name, Parent_ID, Status, Note, temp_a, temp_b
     </sql>
@@ -33,6 +33,13 @@
     </select>
 
     <select id="getDictoryByParentId" resultMap="DictoryWithChildren">
+        select
+        <include refid="Base_Column_List" />
+        from dictory
+        where Parent_ID = #{id} and Status = 0
+    </select>
+
+    <select id="getNodeInfo" resultMap="DictoryWithChildren">
         select
         <include refid="Base_Column_List" />
         from dictory
@@ -97,7 +104,7 @@
             </if>
         </where>
     </select>
-    
+
     <!--通过Map作为筛选条件查询-->
     <select id="select" resultMap="DictoryMap">
         select
@@ -108,13 +115,13 @@
             limit #{page}, #{limit}
         </if>
     </select>
-    
+
     <select id="count" resultType="java.lang.Integer">
         select Count(*)
         from dictory
         <include refid="selectCondition" />
     </select>
-    
+
     <sql id="selectCondition">
         <where>
             <if test="name != null and name != ''">
@@ -140,7 +147,7 @@
 
     <!--新增所有列-->
     <insert id="add" keyProperty="id" useGeneratedKeys="true">
-        insert into dictory        
+        insert into dictory
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="name != null">
                 Name,
@@ -161,7 +168,7 @@
                 temp_b,
             </if>
         </trim>
-        values        
+        values
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="name != null">
                 #{name},
